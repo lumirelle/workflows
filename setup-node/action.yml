@@ -1,0 +1,47 @@
+name: Setup NodeJS
+description: Setup NodeJS environment
+
+inputs:
+  persist-credentials:
+    description: Whether to configure the token or SSH key with the local git config
+    default: 'false'
+
+  fetch-all:
+    description: Whether to fetch all history for all branches and tags.
+    default: 'false'
+
+  node-version:
+    description: 'Version Spec of the version to use. Examples: 12.x, 10.15.1, >=10.15.0.'
+    default: 'lts/*'
+
+  auto-install:
+    description: Whether to automatically install dependencies.
+    default: 'true'
+
+  frozen-lockfile:
+    description: Whether to enable frozen lockfile installation.
+    default: 'true'
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v6.0.1
+      with:
+        persist-credentials: ${{ inputs.persist-credentials }}
+        fetch-depth: "${{ inputs.fetch-all == 'true' && '0' || '1' }}"
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4.2.0
+
+    - name: Setup node
+      uses: actions/setup-node@v6.1.0
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: pnpm
+        registry-url: 'https://registry.npmjs.org'
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install ${{ inputs.frozen-lockfile == 'false' && '--no-frozen-lockfile' || '' }}
+      if: ${{ inputs.auto-install }}
