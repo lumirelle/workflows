@@ -65,12 +65,14 @@ jobs:
 
   test:
     if: ${{ inputs.runtime == 'bun' || inputs.runtime == 'node' }}
+
     strategy:
       matrix:
         bun: [latest]
         node: [20, 22, 24, 25]
         os: [ubuntu-latest, windows-latest, macos-latest]
       fail-fast: false
+
     runs-on: ${{ matrix.os }}
     steps:
       - name: Setup Bun ${{ matrix.bun }}
@@ -92,8 +94,7 @@ jobs:
       - name: Test
         run: nr test --coverage ${{ inputs.runtime == 'bun' && '--coverage-reporter=lcov' || '' }}
 
-      # If you want to get code coverage reports from Codecov
-      # - name: Upload coverage to Codecov
-      #   uses: codecov/codecov-action@v5
-      #   with:
-      #     token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

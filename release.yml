@@ -1,0 +1,45 @@
+name: Release
+
+on:
+  workflow_call:
+    inputs:
+      runtime:
+        required: false
+        type: string
+        default: bun
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: write
+
+    steps:
+      - name: Setup Bun
+        if: ${{ inputs.runtime == 'bun' }}
+        uses: lumirelle/workflows/setup-bun@v1.0
+        with:
+          fetch-all: true
+          install-npm: true
+
+      - name: Setup Node
+        if: ${{ inputs.runtime == 'node' }}
+        uses: lumirelle/workflows/setup-node@v1.0
+        with:
+          fetch-all: true
+
+      - name: Generate GitHub Changelog
+        run: nlx -b changelogithub
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Publish (Bun)
+        if: ${{ inputs.runtime == 'bun' }}
+        run: bun run --filter '*' do-publish
+
+      - name: Publish (Node)
+        if: ${{ inputs.runtime == 'node' }}
+        run: pnpm publish --access public
