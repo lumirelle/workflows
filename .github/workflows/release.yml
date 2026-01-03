@@ -24,14 +24,14 @@ jobs:
     steps:
       - name: Setup Bun
         if: ${{ inputs.runtime == 'bun' }}
-        uses: lumirelle/workflows/setup-bun@v1.0.0
+        uses: lumirelle/workflows/setup-bun@v1
         with:
           fetch-all: true
           install-npm: true
 
       - name: Setup Node
         if: ${{ inputs.runtime == 'node' }}
-        uses: lumirelle/workflows/setup-node@v1.0.0
+        uses: lumirelle/workflows/setup-node@v1
         with:
           fetch-all: true
 
