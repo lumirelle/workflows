@@ -38,7 +38,6 @@ runs:
     - name: Setup Bun
       uses: oven-sh/setup-bun@v2.0.2
       with:
-        cache: ${{ inputs.package-manager }}
         registry-url: 'https://registry.npmjs.org'
 
     - name: Install @antfu/ni
