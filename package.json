@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "prepare": "bun run simple-git-hooks",
-    "lint": "bun run eslint ."
+    "lint": "bun run eslint .",
+    "release": "bun run bumpp && ./release.sh"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^6.7.3",
+    "bumpp": "^10.3.2",
     "eslint": "^9.39.2",
     "eslint-plugin-format": "^1.1.0",
     "lint-staged": "^16.2.7",
