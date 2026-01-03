@@ -9,12 +9,5 @@ on:
 permissions: {}
 
 jobs:
-  debug:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6.0.1
-      - name: Cat bunfig.toml
-        run: cat bunfig.toml
   ci:
     uses: lumirelle/workflows/.github/workflows/ci.yml@v1
