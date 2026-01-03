@@ -46,6 +46,8 @@ jobs:
         if: ${{ inputs.runtime == 'node' }}
         uses: lumirelle/workflows/setup-node@v1
 
+      - run: cat bunfig.toml
+
       - name: Build
         if: ${{ inputs.build-for-check }}
         run: nr build
