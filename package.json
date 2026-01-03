@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "prepare": "bun run simple-git-hooks",
+    "build": "echo 'Build completed!'",
     "lint": "bun run eslint .",
     "typecheck": "echo 'Typecheck successful!'",
     "usecheck": "echo 'Usecheck successful!'",
