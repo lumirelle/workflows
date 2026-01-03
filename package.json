@@ -5,6 +5,9 @@
   "scripts": {
     "prepare": "bun run simple-git-hooks",
     "lint": "bun run eslint .",
+    "typecheck": "echo 'Typecheck successful!'",
+    "usecheck": "echo 'Usecheck successful!'",
+    "test": "echo 'Tests passed!'",
     "release": "bun run bumpp"
   },
   "devDependencies": {

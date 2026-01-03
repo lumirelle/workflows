@@ -1,5 +1,4 @@
 name: CI
-description: Run checks and tests for continuous integration
 
 on:
   workflow_call:
