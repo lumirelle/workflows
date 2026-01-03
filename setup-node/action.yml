@@ -41,7 +41,11 @@ runs:
         cache: pnpm
         registry-url: 'https://registry.npmjs.org'
 
+    - name: Install @antfu/ni
+      shell: bash
+      run: pnpm add -g @antfu/ni
+
     - name: Install dependencies
+      if: ${{ inputs.auto-install }}
       shell: bash
       run: pnpm install ${{ inputs.frozen-lockfile == 'false' && '--no-frozen-lockfile' || '' }}
-      if: ${{ inputs.auto-install }}

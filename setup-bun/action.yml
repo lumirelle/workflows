@@ -37,7 +37,11 @@ runs:
         cache: ${{ inputs.package-manager }}
         registry-url: 'https://registry.npmjs.org'
 
+    - name: Install @antfu/ni
+      shell: bash
+      run: bun install -g @antfu/ni
+
     - name: Install dependencies
+      if: ${{ inputs.auto-install }}
       shell: bash
       run: bun install ${{ inputs.frozen-lockfile == 'true' && '--frozen-lockfile' || '' }}
-      if: ${{ inputs.auto-install }}
