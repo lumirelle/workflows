@@ -5,7 +5,7 @@
   "scripts": {
     "prepare": "bun run simple-git-hooks",
     "lint": "bun run eslint .",
-    "release": "bun run bumpp && ./release.sh"
+    "release": "bun run bumpp"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^6.7.3",

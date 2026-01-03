@@ -8,6 +8,11 @@ on:
         type: string
         default: bun
 
+      publish:
+        required: false
+        type: boolean
+        default: false
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -37,9 +42,9 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: Publish (Bun)
-        if: ${{ inputs.runtime == 'bun' }}
+        if: ${{ inputs.runtime == 'bun' && inputs.publish }}
         run: bun run --filter '*' do-publish
 
       - name: Publish (Node)
-        if: ${{ inputs.runtime == 'node' }}
+        if: ${{ inputs.runtime == 'node' && inputs.publish }}
         run: pnpm publish --access public

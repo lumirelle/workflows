@@ -1,0 +1,14 @@
+name: CI
+description: Run checks and tests for continuous integration
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions: {}
+
+jobs:
+  ci:
+    uses: lumirelle/workflows/ci.yml@v1
