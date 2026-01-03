@@ -1,4 +1,4 @@
-name: Release Commit
+name: Release Commit Dogfood
 
 on: [push, pull_request]
 
