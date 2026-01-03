@@ -1,9 +1,28 @@
 name: Release Commit
 
-on: [push, pull_request]
-
-permissions: {}
+on:
+  workflow_call:
+    inputs:
+      runtime:
+        required: false
+        type: string
+        default: bun
 
 jobs:
-  release-commit:
-    uses: lumirelle/workflows/release-commit.yml@v1
+  check:
+    if: ${{ inputs.runtime == 'bun' || inputs.runtime == 'node' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Bun
+        if: ${{ inputs.runtime == 'bun' }}
+        uses: lumirelle/workflows/setup-bun@v1.0.0
+
+      - name: Setup Node
+        if: ${{ inputs.runtime == 'node' }}
+        uses: lumirelle/workflows/setup-node@v1.0.0
+
+      - name: Build
+        run: nr build
+
+      - name: Publish
+        run: nlx pkg-pr-new publish ${{ inputs.runtime == 'bun' && '--bun' || '' }} ${{ inputs.runtime == 'node' && '--pnpm' || '' }}

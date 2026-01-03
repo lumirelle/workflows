@@ -1,13 +1,99 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  workflow_call:
+    inputs:
+      runtime:
+        required: false
+        type: string
+        default: bun
 
-permissions: {}
+      build-for-check:
+        required: false
+        type: boolean
+        default: false
+
+      build-for-test:
+        required: false
+        type: boolean
+        default: false
+
+      lint:
+        required: false
+        type: string
+        default: nr lint
+
+      typecheck:
+        required: false
+        type: string
+        default: nr typecheck
+
+      usecheck:
+        required: false
+        type: string
+        default: nr usecheck
 
 jobs:
-  ci:
-    uses: lumirelle/workflows/ci.yml@v1
+  check:
+    if: ${{ inputs.runtime == 'bun' || inputs.runtime == 'node' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Bun
+        if: ${{ inputs.runtime == 'bun' }}
+        uses: lumirelle/workflows/setup-bun@v1.0.0
+
+      - name: Setup Node
+        if: ${{ inputs.runtime == 'node' }}
+        uses: lumirelle/workflows/setup-node@v1.0.0
+
+      - name: Build
+        if: ${{ inputs.build-for-check }}
+        run: nr build
+
+      - name: Lint
+        if: ${{ inputs.lint != '' }}
+        run: ${{ inputs.lint }}
+
+      - name: Typecheck
+        if: ${{ inputs.typecheck != '' }}
+        run: ${{ inputs.typecheck }}
+
+      - name: Usecheck
+        if: ${{ inputs.usecheck != '' }}
+        run: ${{ inputs.usecheck }}
+
+  test:
+    if: ${{ inputs.runtime == 'bun' || inputs.runtime == 'node' }}
+
+    strategy:
+      matrix:
+        bun: [latest]
+        node: [20, 22, 24, 25]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+      fail-fast: false
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Setup Bun ${{ matrix.bun }}
+        if: ${{ inputs.runtime == 'bun' }}
+        uses: lumirelle/workflows/setup-bun@v1.0.0
+        with:
+          bun-version: ${{ matrix.bun }}
+
+      - name: Setup Node ${{ matrix.node }}
+        if: ${{ inputs.runtime == 'node' }}
+        uses: lumirelle/workflows/setup-node@v1.0.0
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Build
+        if: ${{ inputs.build-for-test }}
+        run: nr build
+
+      - name: Test
+        run: nr test --coverage ${{ inputs.runtime == 'bun' && '--coverage-reporter=lcov' || '' }}
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
