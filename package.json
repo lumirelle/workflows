@@ -10,7 +10,7 @@
     "typecheck": "echo 'Typecheck successful!'",
     "usecheck": "echo 'Usecheck successful!'",
     "test": "echo 'Tests passed!'",
-    "release": "bun run bumpp"
+    "release": "bun run bumpp && ./release.sh"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^6.7.3",
