@@ -8,6 +8,11 @@ on:
         type: string
         default: bun
 
+      publish:
+        required: false
+        type: boolean
+        default: true
+
 jobs:
   check:
     if: ${{ inputs.runtime == 'bun' || inputs.runtime == 'node' }}
@@ -25,4 +30,5 @@ jobs:
         run: nr build
 
       - name: Publish
+        if: ${{ inputs.publish }}
         run: nlx pkg-pr-new publish ${{ inputs.runtime == 'bun' && '--bun' || '' }} ${{ inputs.runtime == 'node' && '--pnpm' || '' }}
