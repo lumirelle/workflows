@@ -12,6 +12,16 @@ on:
         required: false
         type: boolean
         default: true
+        
+      compact:
+        required: false
+        type: boolean
+        default: false
+
+      packages:
+        required: false
+        type: string
+        default: ''
 
 jobs:
   check:
@@ -31,4 +41,4 @@ jobs:
 
       - name: Publish
         if: ${{ inputs.publish }}
-        run: nlx pkg-pr-new publish ${{ inputs.runtime == 'bun' && '--bun' || '' }} ${{ inputs.runtime == 'node' && '--pnpm' || '' }}
+        run: nlx pkg-pr-new publish ${{ inputs.compact && '--compact' || '' }}  ${{ inputs.runtime == 'bun' && '--bun' || '' }} ${{ inputs.runtime == 'node' && '--pnpm' || '' }} ${{ inputs.packages}}
