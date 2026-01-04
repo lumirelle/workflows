@@ -24,7 +24,7 @@ on:
         default: ''
 
 jobs:
-  check:
+  release-commit:
     if: ${{ inputs.runtime == 'bun' || inputs.runtime == 'node' }}
     runs-on: ubuntu-latest
     steps:
@@ -41,4 +41,4 @@ jobs:
 
       - name: Publish
         if: ${{ inputs.publish }}
-        run: nlx pkg-pr-new publish ${{ inputs.compact && '--compact' || '' }}  ${{ inputs.runtime == 'bun' && '--bun' || '' }} ${{ inputs.runtime == 'node' && '--pnpm' || '' }} ${{ inputs.packages}}
+        run: nlx pkg-pr-new publish ${{ inputs.runtime == 'bun' && '--bun' || '' }} ${{ inputs.runtime == 'node' && '--pnpm' || '' }} ${{ inputs.compact && '--compact' || '' }} ${{ inputs.packages}}
