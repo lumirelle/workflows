@@ -48,7 +48,9 @@ jobs:
 
       - name: Publish (Bun)
         if: ${{ inputs.runtime == 'bun' && inputs.publish }}
-        run: bash ./setup-bun/publish.sh "${{ inputs.packages }}"
+        run: |
+          packages=($(echo "${{ inputs.packages }}" | tr " " "\n"))
+          bash ./setup-bun/publish.sh "${packages[@]}"
 
       - name: Publish (Node)
         if: ${{ inputs.runtime == 'node' && inputs.publish }}
