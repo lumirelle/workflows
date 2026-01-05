@@ -54,7 +54,7 @@ jobs:
           for pattern in "${patterns[@]}"; do
             packages+=($pattern)
           done
-          bash ./setup-bun/publish.sh "${packages[@]}"
+          curl -fsSL https://raw.githubusercontent.com/lumirelle/workflows/v2/setup-bun/publish.sh | bash "${packages[@]}"
 
       - name: Publish (Node)
         if: ${{ inputs.runtime == 'node' && inputs.publish }}
