@@ -8,8 +8,8 @@
     "build": "echo 'Build completed!'",
     "lint": "bun run eslint .",
     "typecheck": "echo 'Typecheck successful!'",
-    "usecheck": "echo 'Usecheck successful!'",
-    "check": "bun run lint && bun run typecheck && bun run usecheck",
+    "usagecheck": "echo 'Usagecheck successful!'",
+    "check": "bun run lint && bun run typecheck && bun run usagecheck",
     "test": "echo 'Tests passed!'",
     "prerelease": "bun run check && bun run test",
     "release": "bun run bumpp && bun run ./release.sh"
