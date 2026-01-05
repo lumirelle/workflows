@@ -1,7 +1,7 @@
 {
   "name": "workflows",
   "type": "module",
-  "version": "1.0.8",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "prepare": "bun run simple-git-hooks",
