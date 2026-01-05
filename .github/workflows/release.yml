@@ -13,6 +13,11 @@ on:
         type: boolean
         default: false
 
+      packages:
+        required: false
+        type: string
+        default: .
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -43,7 +48,7 @@ jobs:
 
       - name: Publish (Bun)
         if: ${{ inputs.runtime == 'bun' && inputs.publish }}
-        run: bun run --filter '*' do-publish
+        run: bash ./setup-bun/publish.sh "${{ inputs.packages }}"
 
       - name: Publish (Node)
         if: ${{ inputs.runtime == 'node' && inputs.publish }}
