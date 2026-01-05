@@ -12,7 +12,7 @@ jobs:
     uses: lumirelle/workflows/.github/workflows/release.yml@main
     with:
       publish: true
-      packages: ./setup-bun/* ./examples/*
+      packages: ./.github/*
     permissions:
       contents: write
       id-token: write
