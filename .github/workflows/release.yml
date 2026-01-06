@@ -50,7 +50,7 @@ jobs:
         if: ${{ inputs.runtime == 'bun' && inputs.publish }}
         run: |
           IFS=' ' read -ra packages <<< "${{ inputs.packages }}"
-          for package in "${packages[@]}"; do
+          for package in ${packages[@]}; do
             (cd $package  && bun pm pack --filename "${package}/release.tgz" && bunx npm publish ./release.tgz --access public)
           done
 
