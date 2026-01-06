@@ -36,7 +36,7 @@ runs:
         fetch-depth: "${{ inputs.fetch-all == 'true' && '0' || '1' }}"
 
     - name: Setup Bun
-      uses: oven-sh/setup-bun@v3.0.2
+      uses: oven-sh/setup-bun@v2.0.2
 
     - name: Install @antfu/ni
       shell: bash
