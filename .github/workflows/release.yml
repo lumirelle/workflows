@@ -49,12 +49,10 @@ jobs:
       - name: Publish (Bun)
         if: ${{ inputs.runtime == 'bun' && inputs.publish }}
         run: |
-          IFS=' ' read -ra patterns <<< "${{ inputs.packages }}"
-          packages=()
-          for pattern in "${patterns[@]}"; do
-            packages+=($pattern)
+          IFS=' ' read -ra packages <<< "${{ inputs.packages }}"
+          for package in "${packages[@]}"; do
+            (cd $package  && bun pm pack --filename "${package}/release.tgz" && bunx npm publish ./release.tgz --access public)
           done
-          curl -fsSL https://raw.githubusercontent.com/lumirelle/workflows/v2/setup-bun/publish.sh | bash -s -- "${packages[@]}"
 
       - name: Publish (Node)
         if: ${{ inputs.runtime == 'node' && inputs.publish }}
