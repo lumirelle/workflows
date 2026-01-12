@@ -18,6 +18,11 @@ on:
         type: string
         default: .
 
+      tag:
+        required: false
+        type: string
+        default: latest
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -51,7 +56,7 @@ jobs:
         run: |
           IFS=' ' read -ra packages <<< "${{ inputs.packages }}"
           for package in ${packages[@]}; do
-            (cd $package  && bun pm pack --filename "${package}/release.tgz" && bunx npm publish ./release.tgz --access public)
+            (cd $package  && bun pm pack --filename "${package}/release.tgz" && bunx npm publish ./release.tgz --access public --tag ${{ inputs.tag }})
           done
 
       - name: Publish (Node)
