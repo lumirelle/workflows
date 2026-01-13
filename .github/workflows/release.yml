@@ -45,6 +45,9 @@ jobs:
         with:
           fetch-all: true
 
+      - name: Build
+        run: nr build
+
       - name: Generate GitHub Changelog
         run: nlx -b changelogithub
         continue-on-error: true
