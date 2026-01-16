@@ -11,7 +11,7 @@ on:
       build-for-check:
         required: false
         type: boolean
-        default: false
+        default: true
 
       build-for-test:
         required: false
