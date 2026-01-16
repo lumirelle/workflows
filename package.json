@@ -7,9 +7,10 @@
     "prepare": "bun simple-git-hooks",
     "build": "echo 'Build completed!'",
     "lint": "bun eslint .",
-    "typecheck": "echo 'Typecheck successful!'",
-    "usagecheck": "echo 'Usagecheck successful!'",
-    "check": "bun run lint && bun run typecheck && bun run usagecheck",
+    "typecheck": "echo 'Type check successful!'",
+    "usagecheck": "echo 'Usage check successful!'",
+    "distcheck": "echo 'Distribution check successful!'",
+    "check": "bun run lint && bun run typecheck && bun run usagecheck && bun run distcheck",
     "test": "echo 'Tests passed!'",
     "prerelease": "bun run check && bun run test",
     "release": "bun bumpp && bun ./release.sh"
