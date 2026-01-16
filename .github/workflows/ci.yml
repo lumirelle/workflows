@@ -13,20 +13,30 @@ on:
         type: boolean
         default: false
 
+      build-for-test:
+        required: false
+        type: boolean
+        default: true
+
       lint:
         required: false
         type: string
-        default: nr lint
+        default: nr lint --if-present
 
       typecheck:
         required: false
         type: string
-        default: nr typecheck
+        default: nr typecheck --if-present
 
       usagecheck:
         required: false
         type: string
-        default: nr usagecheck
+        default: nr usagecheck --if-present
+
+      distcheck:
+        required: false
+        type: string
+        default: nr distcheck --if-present
 
 jobs:
   check:
@@ -49,13 +59,17 @@ jobs:
         if: ${{ inputs.lint != '' }}
         run: ${{ inputs.lint }}
 
-      - name: Typecheck
+      - name: Type Check
         if: ${{ inputs.typecheck != '' }}
         run: ${{ inputs.typecheck }}
 
-      - name: Usagecheck
+      - name: Usage Check
         if: ${{ inputs.usagecheck != '' }}
         run: ${{ inputs.usagecheck }}
+
+      - name: Distribution Check
+        if: ${{ inputs.distcheck != '' }}
+        run: ${{ inputs.distcheck }}
 
   test-bun:
     if: ${{ inputs.runtime == 'bun' }}
@@ -75,6 +89,7 @@ jobs:
           bun-version: ${{ matrix.bun }}
 
       - name: Build
+        if: ${{ inputs.build-for-test }}
         run: nr build
 
       - name: Test
@@ -103,6 +118,7 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Build
+        if: ${{ inputs.build-for-test }}
         run: nr build
 
       - name: Test
