@@ -2,13 +2,8 @@
   // Editor Code Actions on Save
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
-    "source.fixAll.stylelint": "explicit",
     "source.organizeImports": "never"
   },
-
-  // LSP
-  // Try out ts-go for better performance
-  "typescript.experimental.useTsgo": true,
 
   // Formatter & Linter
   "editor.formatOnSave": false,
