@@ -6,29 +6,35 @@
   "scripts": {
     "prepare": "bun simple-git-hooks",
     "build": "echo 'Build completed!'",
-    "lint": "bun eslint .",
-    "typecheck": "echo 'Type check successful!'",
-    "usagecheck": "echo 'Usage check successful!'",
-    "distcheck": "echo 'Distribution check successful!'",
-    "check": "bun run lint && bun run typecheck && bun run usagecheck && bun run distcheck",
+    "format": "bunx oxfmt",
+    "lint": "bun --parallel oxlint eslint",
+    "lint:fix": "bun --sequential 'oxlint --fix' 'eslint --fix'",
+    "check:type": "echo 'Type check successful!'",
+    "check:usage": "echo 'Usage check successful!'",
+    "check:dist": "echo 'Distribution check successful!'",
+    "check": "bun run --parallel lint check:type check:usage check:dist",
     "test": "echo 'Tests passed!'",
-    "prerelease": "bun run check && bun run test",
+    "prerelease": "bun run --sequential build check test",
     "release": "bun bumpp && bun ./release.sh"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^6.7.3",
-    "bumpp": "^10.3.2",
-    "eslint": "^9.39.2",
-    "eslint-plugin-format": "^1.1.0",
-    "lint-staged": "^16.2.7",
+    "@antfu/eslint-config": "^7.6.1",
+    "bumpp": "^10.4.1",
+    "eslint": "^9.39.3",
+    "eslint-plugin-oxlint": "^1.50.0",
+    "nano-staged": "^0.9.0",
+    "oxfmt": "^0.35.0",
+    "oxlint": "^1.50.0",
     "simple-git-hooks": "git+https://github.com/toplenboren/simple-git-hooks.git#7625657"
   },
   "simple-git-hooks": {
-    "pre-commit": "bun lint-staged"
+    "pre-commit": "bun nano-staged"
   },
-  "lint-staged": {
+  "nano-staged": {
     "*": [
-      "bun eslint --fix"
+      "bun oxlint",
+      "bun eslint",
+      "bunx oxfmt --no-error-on-unmatched-pattern"
     ]
   }
 }
