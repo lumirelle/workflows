@@ -18,25 +18,15 @@ on:
         type: boolean
         default: true
 
-      lint:
+      check:
         required: false
         type: string
-        default: nr lint --if-present
+        default: nr check --if-present
 
-      typecheck:
+      test:
         required: false
         type: string
-        default: nr typecheck --if-present
-
-      usagecheck:
-        required: false
-        type: string
-        default: nr usagecheck --if-present
-
-      distcheck:
-        required: false
-        type: string
-        default: nr distcheck --if-present
+        default: nr test --if-present
 
 jobs:
   check:
@@ -55,21 +45,9 @@ jobs:
         if: ${{ inputs.build-for-check }}
         run: nr build
 
-      - name: Lint
-        if: ${{ inputs.lint != '' }}
-        run: ${{ inputs.lint }}
-
-      - name: Type Check
-        if: ${{ inputs.typecheck != '' }}
-        run: ${{ inputs.typecheck }}
-
-      - name: Usage Check
-        if: ${{ inputs.usagecheck != '' }}
-        run: ${{ inputs.usagecheck }}
-
-      - name: Distribution Check
-        if: ${{ inputs.distcheck != '' }}
-        run: ${{ inputs.distcheck }}
+      - name: Check
+        if: ${{ inputs.check != '' }}
+        run: ${{ inputs.check }}
 
   test-bun:
     if: ${{ inputs.runtime == 'bun' }}
@@ -93,7 +71,7 @@ jobs:
         run: nr build
 
       - name: Test
-        run: nr test --coverage --coverage-reporter=lcov
+        run: ${{ inputs.test }} --coverage --coverage-reporter=lcov
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
@@ -122,7 +100,7 @@ jobs:
         run: nr build
 
       - name: Test
-        run: nr test --coverage
+        run: ${{ inputs.test }} --coverage
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
