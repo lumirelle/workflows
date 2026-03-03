@@ -28,6 +28,11 @@ on:
         type: string
         default: nr test --if-present
 
+      coverage:
+        required: false
+        type: boolean
+        default: true
+
 jobs:
   check:
     if: ${{ inputs.runtime == 'bun' || inputs.runtime == 'node' }}
@@ -71,9 +76,10 @@ jobs:
         run: nr build
 
       - name: Test
-        run: ${{ inputs.test }} --coverage --coverage-reporter=lcov
+        run: ${{ inputs.test }} ${{ inputs.coverage && '--coverage' }}
 
       - name: Upload coverage to Codecov
+        if: ${{ inputs.coverage }}
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -100,9 +106,10 @@ jobs:
         run: nr build
 
       - name: Test
-        run: ${{ inputs.test }} --coverage
+        run: ${{ inputs.test }} ${{ inputs.coverage && '--coverage' }}
 
       - name: Upload coverage to Codecov
+        if: ${{ inputs.coverage }}
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
