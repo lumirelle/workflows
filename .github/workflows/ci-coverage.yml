@@ -21,7 +21,7 @@ on:
       build:
         required: false
         type: string
-        default: nr build --if-present
+        default: nr build
 
       test:
         required: false

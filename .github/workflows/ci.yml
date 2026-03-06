@@ -46,7 +46,7 @@ on:
       build:
         required: false
         type: string
-        default: nr build --if-present
+        default: nr build
 
       check:
         required: false
