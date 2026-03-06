@@ -8,6 +8,11 @@ on:
         type: string
         default: bun
 
+      build:
+        required: false
+        type: string
+        default: nr build
+
       publish:
         required: false
         type: boolean
@@ -37,7 +42,7 @@ jobs:
         uses: lumirelle/workflows/setup-node@v3
 
       - name: Build
-        run: nr build
+        run: ${{ inputs.build }}
 
       - name: Publish
         if: ${{ inputs.publish }}
