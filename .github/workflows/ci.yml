@@ -3,6 +3,31 @@ name: CI
 on:
   workflow_call:
     inputs:
+      primary-os:
+        required: false
+        type: string
+        default: ubuntu-slim
+
+      os-matrix:
+        required: false
+        type: string
+        default: '"ubuntu-slim", "macos-latest", "windows-latest"'
+
+      bun-versions:
+        required: false
+        type: string
+        default: latest
+
+      node-versions:
+        required: false
+        type: string
+        default: '20, 22, 24, 25'
+
+      skip-check:
+        required: false
+        type: boolean
+        default: false
+
       runtime:
         required: false
         type: string
@@ -18,6 +43,11 @@ on:
         type: boolean
         default: true
 
+      build:
+        required: false
+        type: string
+        default: nr build --if-present
+
       check:
         required: false
         type: string
@@ -28,15 +58,10 @@ on:
         type: string
         default: nr test --if-present
 
-      coverage:
-        required: false
-        type: boolean
-        default: true
-
 jobs:
   check:
-    if: ${{ inputs.runtime == 'bun' || inputs.runtime == 'node' }}
-    runs-on: ubuntu-latest
+    if: ${{ !inputs.skip-check }}
+    runs-on: ${{ inputs.primary-os }}
     steps:
       - name: Setup Bun
         if: ${{ inputs.runtime == 'bun' }}
@@ -48,7 +73,7 @@ jobs:
 
       - name: Build
         if: ${{ inputs.build-for-check }}
-        run: nr build
+        run: ${{ inputs.build }}
 
       - name: Check
         if: ${{ inputs.check != '' }}
@@ -56,13 +81,11 @@ jobs:
 
   test-bun:
     if: ${{ inputs.runtime == 'bun' }}
-
     strategy:
       matrix:
-        bun: [latest]
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: ${{ fromJson(format('[{0}]', inputs.os-matrix)) }}
+        bun: ${{ fromJson(format('[{0}]', inputs.bun-versions)) }}
       fail-fast: false
-
     runs-on: ${{ matrix.os }}
     steps:
       - name: Setup Bun ${{ matrix.bun }}
@@ -73,26 +96,18 @@ jobs:
 
       - name: Build
         if: ${{ inputs.build-for-test }}
-        run: nr build
+        run: ${{ inputs.build }}
 
       - name: Test
-        run: ${{ inputs.test }} ${{ inputs.coverage && '--coverage' }}
-
-      - name: Upload coverage to Codecov
-        if: ${{ inputs.coverage }}
-        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+        run: ${{ inputs.test }}
 
   test-node:
     if: ${{ inputs.runtime == 'node' }}
-
     strategy:
       matrix:
-        node: [20, 22, 24, 25]
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: ${{ fromJson(format('[{0}]', inputs.os-matrix)) }}
+        node: ${{ fromJson(format('[{0}]', inputs.node-versions)) }}
       fail-fast: false
-
     runs-on: ${{ matrix.os }}
     steps:
       - name: Setup Node ${{ matrix.node }}
@@ -103,13 +118,7 @@ jobs:
 
       - name: Build
         if: ${{ inputs.build-for-test }}
-        run: nr build
+        run: ${{ inputs.build }}
 
       - name: Test
-        run: ${{ inputs.test }} ${{ inputs.coverage && '--coverage' }}
-
-      - name: Upload coverage to Codecov
-        if: ${{ inputs.coverage }}
-        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+        run: ${{ inputs.test }}

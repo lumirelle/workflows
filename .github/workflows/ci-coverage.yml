@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  workflow_call:
+    inputs:
+      primary-os:
+        required: false
+        type: string
+        default: ubuntu-slim
+
+      runtime:
+        required: false
+        type: string
+        default: bun
+
+      build-for-test:
+        required: false
+        type: boolean
+        default: true
+
+      build:
+        required: false
+        type: string
+        default: nr build --if-present
+
+      test:
+        required: false
+        type: string
+        default: nr test --coverage --if-present
+
+jobs:
+  test-bun:
+    if: ${{ inputs.runtime == 'bun' }}
+    runs-on: ${{ inputs.primary-os }}
+    steps:
+      - name: Setup Bun
+        if: ${{ inputs.runtime == 'bun' }}
+        uses: lumirelle/workflows/setup-bun@v3
+
+      - name: Build
+        if: ${{ inputs.build-for-test }}
+        run: ${{ inputs.build }}
+
+      - name: Test
+        run: ${{ inputs.test }}
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  test-node:
+    if: ${{ inputs.runtime == 'node' }}
+    runs-on: ${{ inputs.primary-os }}
+    steps:
+      - name: Setup Node
+        if: ${{ inputs.runtime == 'node' }}
+        uses: lumirelle/workflows/setup-node@v3
+
+      - name: Build
+        if: ${{ inputs.build-for-test }}
+        run: ${{ inputs.build }}
+
+      - name: Test
+        run: ${{ inputs.test }}
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
