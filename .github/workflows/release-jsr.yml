@@ -1,0 +1,39 @@
+name: Release Commit
+
+on:
+  workflow_call:
+    inputs:
+      runtime:
+        required: false
+        type: string
+        default: bun
+
+      build:
+        required: false
+        type: string
+        default: nr build
+
+      publish:
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  release-commit:
+    if: ${{ inputs.runtime == 'bun' || inputs.runtime == 'node' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Bun
+        if: ${{ inputs.runtime == 'bun' }}
+        uses: lumirelle/workflows/setup-bun@v3
+
+      - name: Setup Node
+        if: ${{ inputs.runtime == 'node' }}
+        uses: lumirelle/workflows/setup-node@v3
+
+      - name: Build
+        run: ${{ inputs.build }}
+
+      - name: Publish
+        if: ${{ inputs.publish }}
+        run: nlx jsr publish
