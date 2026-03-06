@@ -1,4 +1,4 @@
-name: CI Dogfood
+name: CI Coverage
 
 on:
   push:

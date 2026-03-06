@@ -1,4 +1,4 @@
-name: Release Commit
+name: Release JSR
 
 on:
   workflow_call:

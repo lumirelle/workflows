@@ -1,4 +1,4 @@
-name: Release Commit Dogfood
+name: Release JSR Dogfood
 
 on:
   push:
