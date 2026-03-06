@@ -1,0 +1,70 @@
+name: CI Autofix
+
+on:
+  workflow_call:
+    inputs:
+      primary-os:
+        required: false
+        type: string
+        default: ubuntu-slim
+
+      runtime:
+        required: false
+        type: string
+        default: bun
+
+      build-for-fix:
+        required: false
+        type: boolean
+        default: true
+
+      build:
+        required: false
+        type: string
+        default: nr build
+
+      fix:
+        required: false
+        type: string
+        default: nr lint:fix
+
+jobs:
+  test-bun:
+    if: ${{ inputs.runtime == 'bun' }}
+    runs-on: ${{ inputs.primary-os }}
+    steps:
+      - name: Setup Bun
+        if: ${{ inputs.runtime == 'bun' }}
+        uses: lumirelle/workflows/setup-bun@v3
+        with:
+          frozen-lockfile: false
+
+      - name: Build
+        if: ${{ inputs.build-for-fix }}
+        run: ${{ inputs.build }}
+
+      - name: Fix
+        run: ${{ inputs.fix }}
+
+      - name: Commit
+        uses: autofix-ci/action@7a166d7532b277f34e16238930461bf77f9d7ed8 # v1.3.3
+
+  test-node:
+    if: ${{ inputs.runtime == 'node' }}
+    runs-on: ${{ inputs.primary-os }}
+    steps:
+      - name: Setup Node
+        if: ${{ inputs.runtime == 'node' }}
+        uses: lumirelle/workflows/setup-node@v3
+        with:
+          frozen-lockfile: false
+
+      - name: Build
+        if: ${{ inputs.build-for-fix }}
+        run: ${{ inputs.build }}
+
+      - name: Fix
+        run: ${{ inputs.fix }}
+
+      - name: Commit
+        uses: autofix-ci/action@7a166d7532b277f34e16238930461bf77f9d7ed8 # v1.3.3

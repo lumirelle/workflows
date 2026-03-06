@@ -8,11 +8,22 @@ on:
         type: string
         default: bun
 
+      changelog:
+        required: false
+        type: boolean
+        default: true
+
+      build:
+        required: false
+        type: string
+        default: nr build
+
       publish:
         required: false
         type: boolean
         default: false
 
+      # This only works for Bun, as it has no `-r` option.
       packages:
         required: false
         type: string
@@ -45,23 +56,24 @@ jobs:
         with:
           fetch-all: true
 
-      - name: Build
-        run: nr build
-
       - name: Generate GitHub Changelog
+        if: ${{ inputs.changelog }}
         run: nlx -b changelogithub
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - name: Publish (Bun)
+      - name: Build
+        run: ${{ inputs.build != '' && inputs.publish }}
+
+      - name: Publish (Bun) To NPM
         if: ${{ inputs.runtime == 'bun' && inputs.publish }}
         run: |
           IFS=' ' read -ra packages <<< "${{ inputs.packages }}"
           for package in ${packages[@]}; do
-            (cd $package  && bun pm pack --filename "${package}/release.tgz" && bunx npm publish ./release.tgz --access public --tag ${{ inputs.tag }})
+            (cd $package  && bun pm pack --filename "${package}/release.tgz" && bunx npm publish ./release.tgz --access public ${{ inputs.tag && format('--tag {0}', inputs.tag) || '' }}
           done
 
-      - name: Publish (Node)
+      - name: Publish (Node) To NPM
         if: ${{ inputs.runtime == 'node' && inputs.publish }}
-        run: pnpm publish --access public
+        run: pnpm -r publish --access public ${{ inputs.tag && format('--tag {0}', inputs.tag) || '' }}
