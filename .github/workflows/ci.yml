@@ -16,7 +16,7 @@ on:
       bun-versions:
         required: false
         type: string
-        default: latest
+        default: '"latest"'
 
       node-versions:
         required: false
