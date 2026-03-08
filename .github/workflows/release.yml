@@ -37,11 +37,9 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-
     permissions:
       id-token: write
       contents: write
-
     steps:
       - name: Setup Bun
         if: ${{ inputs.runtime == 'bun' }}

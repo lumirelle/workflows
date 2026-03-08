@@ -30,7 +30,6 @@ on:
 
 jobs:
   release-commit:
-    if: ${{ inputs.runtime == 'bun' || inputs.runtime == 'node' }}
     runs-on: ubuntu-latest
     steps:
       - name: Setup Bun

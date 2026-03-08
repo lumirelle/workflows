@@ -29,9 +29,11 @@ on:
         default: nr lint:fix
 
 jobs:
-  test-bun:
+  autofix-bun:
     if: ${{ inputs.runtime == 'bun' }}
     runs-on: ${{ inputs.primary-os }}
+    permissions:
+      contents: read
     steps:
       - name: Setup Bun
         if: ${{ inputs.runtime == 'bun' }}
@@ -49,9 +51,11 @@ jobs:
       - name: Commit
         uses: autofix-ci/action@7a166d7532b277f34e16238930461bf77f9d7ed8 # v1.3.3
 
-  test-node:
+  autofix-node:
     if: ${{ inputs.runtime == 'node' }}
     runs-on: ${{ inputs.primary-os }}
+    permissions:
+      contents: read
     steps:
       - name: Setup Node
         if: ${{ inputs.runtime == 'node' }}

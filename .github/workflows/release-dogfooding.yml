@@ -1,4 +1,4 @@
-name: Release Dogfood
+name: Release Dogfooding
 
 on:
   push:
@@ -9,9 +9,9 @@ permissions: {}
 jobs:
   release:
     uses: lumirelle/workflows/.github/workflows/release.yml@main
-    with:
-      publish: false
-      packages: ./.github/* ./*
     permissions:
       contents: write
       id-token: write
+    with:
+      publish: false
+      packages: ./.github/* ./*

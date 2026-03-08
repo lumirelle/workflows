@@ -1,10 +1,6 @@
-name: Release Commit Dogfood
+name: Release Commit Dogfooding
 
-on:
-  push:
-    branches: ['**']
-    tags-ignore: ['v*']
-  pull_request: {}
+on: [push, pull_request]
 
 permissions: {}
 

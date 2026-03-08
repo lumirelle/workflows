@@ -19,9 +19,11 @@ on:
         default: true
 
 jobs:
-  release-commit:
-    if: ${{ inputs.runtime == 'bun' || inputs.runtime == 'node' }}
+  release-jsr:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Setup Bun
         if: ${{ inputs.runtime == 'bun' }}

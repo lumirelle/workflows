@@ -29,9 +29,11 @@ on:
         default: nr test --coverage --if-present
 
 jobs:
-  test-bun:
+  coverage-bun:
     if: ${{ inputs.runtime == 'bun' }}
     runs-on: ${{ inputs.primary-os }}
+    permissions:
+      id-token: write
     steps:
       - name: Setup Bun
         if: ${{ inputs.runtime == 'bun' }}
@@ -49,9 +51,11 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
-  test-node:
+  coverage-node:
     if: ${{ inputs.runtime == 'node' }}
     runs-on: ${{ inputs.primary-os }}
+    permissions:
+      id-token: write
     steps:
       - name: Setup Node
         if: ${{ inputs.runtime == 'node' }}

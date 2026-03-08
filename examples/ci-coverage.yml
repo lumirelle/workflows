@@ -9,5 +9,7 @@ on:
 permissions: {}
 
 jobs:
-  ci:
+  coverage:
     uses: lumirelle/workflows/.github/workflows/ci-coverage.yml@v3
+    permissions:
+      id-token: write
