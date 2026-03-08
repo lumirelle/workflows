@@ -16,7 +16,7 @@ on:
       publish:
         required: false
         type: boolean
-        default: true
+        default: false
 
 jobs:
   release-jsr:
@@ -34,6 +34,7 @@ jobs:
         uses: lumirelle/workflows/setup-node@v3
 
       - name: Build
+        if: ${{ inputs.build != '' && inputs.publish }}
         run: ${{ inputs.build }}
 
       - name: Publish

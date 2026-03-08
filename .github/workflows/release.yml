@@ -62,7 +62,8 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: Build
-        run: ${{ inputs.build != '' && inputs.publish }}
+        if: ${{ inputs.build != '' && inputs.publish }}
+        run: ${{ inputs.build }}
 
       - name: Publish (Bun) To NPM
         if: ${{ inputs.runtime == 'bun' && inputs.publish }}
