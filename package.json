@@ -1,7 +1,7 @@
 {
   "name": "workflows",
   "type": "module",
-  "version": "3.0.19",
+  "version": "3.0.20",
   "private": true,
   "scripts": {
     "prepare": "simple-git-hooks",
