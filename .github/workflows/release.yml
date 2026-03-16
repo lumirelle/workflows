@@ -68,9 +68,55 @@ jobs:
       - name: Publish (Bun) To NPM
         if: ${{ inputs.runtime == 'bun' && inputs.publish }}
         run: |
-          IFS=' ' read -ra packages <<< "${{ inputs.packages }}"
-          for package in ${packages[@]}; do
-            (cd $package  && bun pm pack --filename "${package}/release.tgz" && bunx npm publish ./release.tgz --access public ${{ inputs.tag && format('--tag {0}', inputs.tag) || '' }})
+          set -euo pipefail
+          shopt -s nullglob
+
+          raw_packages='${{ inputs.packages }}'
+          # Support values like: ., ./packages/*, ".", "./packages/*", and comma/space-separated forms.
+          normalized_packages="$raw_packages"
+          normalized_packages="${normalized_packages//,/ }"
+          normalized_packages="${normalized_packages//\"/}"
+          normalized_packages="${normalized_packages//\'/}"
+          read -r -a package_patterns <<< "$normalized_packages"
+
+          if [[ ${#package_patterns[@]} -eq 0 ]]; then
+            echo "No packages provided."
+            exit 1
+          fi
+
+          declare -a packages=()
+          declare -A seen=()
+          for pattern in "${package_patterns[@]}"; do
+            matched=( $pattern )
+            if [[ ${#matched[@]} -eq 0 ]]; then
+              echo "No package matched pattern: $pattern"
+              exit 1
+            fi
+
+            for package in "${matched[@]}"; do
+              if [[ ! -d "$package" ]]; then
+                echo "Skipping non-directory match: $package"
+                continue
+              fi
+              if [[ -z "${seen[$package]+x}" ]]; then
+                seen[$package]=1
+                packages+=("$package")
+              fi
+            done
+          done
+
+          if [[ ${#packages[@]} -eq 0 ]]; then
+            echo "No package directories resolved from: $raw_packages"
+            exit 1
+          fi
+
+          for package in "${packages[@]}"; do
+            (
+              echo "Publishing package: $package"
+              cd "$package"
+              bun pm pack --filename release.tgz
+              bunx npm publish ./release.tgz --access public ${{ inputs.tag && format('--tag {0}', inputs.tag) || '' }}
+            )
           done
 
       - name: Publish (Node) To NPM
