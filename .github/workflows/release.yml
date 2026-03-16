@@ -70,7 +70,7 @@ jobs:
         run: |
           IFS=' ' read -ra packages <<< "${{ inputs.packages }}"
           for package in ${packages[@]}; do
-            (cd $package  && bun pm pack --filename "${package}/release.tgz" && bunx npm publish ./release.tgz --access public ${{ inputs.tag && format('--tag {0}', inputs.tag) || '' }}
+            (cd $package  && bun pm pack --filename "${package}/release.tgz" && bunx npm publish ./release.tgz --access public ${{ inputs.tag && format('--tag {0}', inputs.tag) || '' }})
           done
 
       - name: Publish (Node) To NPM
