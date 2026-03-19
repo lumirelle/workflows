@@ -18,11 +18,13 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^7.7.0",
+    "@lumirelle/oxlint-config": "^0.0.3",
     "bumpp": "^10.4.1",
     "eslint": "^9.39.4",
     "eslint-plugin-oxlint": "^1.51.0",
     "nano-staged": "^0.9.0",
     "oxlint": "^1.51.0",
+    "oxlint-tsgolint": "^0.17.0",
     "simple-git-hooks": "git+https://github.com/toplenboren/simple-git-hooks.git#7625657"
   },
   "simple-git-hooks": {
