@@ -114,7 +114,7 @@ jobs:
             (
               echo "Publishing package: $package"
               cd "$package"
-              na pm pack --filename release.tgz
+              na pm pack --filename "$package/release.tgz"
               nlx npm publish ./release.tgz --access public ${{ inputs.tag && format('--tag {0}', inputs.tag) || '' }}
             )
           done
