@@ -17,13 +17,13 @@
     "release": "bumpp && bun run ./release.sh"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^8.0.0",
-    "@lumirelle/oxlint-config": "^0.2.1",
+    "@antfu/eslint-config": "^8.2.0",
+    "@lumirelle/oxlint-config": "^0.2.2",
     "bumpp": "^11.0.1",
     "eslint": "^10.2.0",
-    "eslint-plugin-oxlint": "^1.58.0",
-    "nano-staged": "^0.9.0",
-    "oxlint": "^1.59.0",
+    "eslint-plugin-oxlint": "^1.59.0",
+    "nano-staged": "^1.0.2",
+    "oxlint": "^1.60.0",
     "oxlint-tsgolint": "^0.20.0",
     "simple-git-hooks": "git+https://github.com/toplenboren/simple-git-hooks.git#7625657"
   },
@@ -32,7 +32,7 @@
   },
   "nano-staged": {
     "*": [
-      "oxlint",
+      "oxlint --no-error-on-unmatched-pattern",
       "eslint"
     ]
   }
