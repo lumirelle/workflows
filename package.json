@@ -11,10 +11,9 @@
     "lint:fix": "oxlint --fix && eslint --fix",
     "typecheck": "echo 'Type check successful!'",
     "unused": "echo 'Unused check successful!'",
-    "pubcheck": "echo 'Distribution check successful!'",
-    "check": "bun run --parallel lint typecheck unused pubcheck",
+    "check": "bun run --parallel lint typecheck unused",
     "test": "echo 'Tests passed!'",
-    "prerelease": "bun run build && bun run --parallel check test",
+    "prerelease": "bun run --parallel check test",
     "release": "bumpp && bun run ./release.sh"
   },
   "devDependencies": {
