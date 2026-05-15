@@ -50,11 +50,11 @@ jobs:
     steps:
       - name: Setup Bun
         if: ${{ inputs.runtime == 'bun' }}
-        uses: lumirelle/workflows/setup-bun@v3
+        uses: lumirelle/workflows/setup-bun@v4
 
       - name: Setup Node
         if: ${{ inputs.runtime == 'node' }}
-        uses: lumirelle/workflows/setup-node@v3
+        uses: lumirelle/workflows/setup-node@v4
 
       - name: Check
         if: ${{ inputs.check != '' }}
@@ -71,7 +71,7 @@ jobs:
     steps:
       - name: Setup Bun ${{ matrix.bun }}
         if: ${{ inputs.runtime == 'bun' }}
-        uses: lumirelle/workflows/setup-bun@v3
+        uses: lumirelle/workflows/setup-bun@v4
         with:
           bun-version: ${{ matrix.bun }}
 
@@ -89,7 +89,7 @@ jobs:
     steps:
       - name: Setup Node ${{ matrix.node }}
         if: ${{ inputs.runtime == 'node' }}
-        uses: lumirelle/workflows/setup-node@v3
+        uses: lumirelle/workflows/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
 

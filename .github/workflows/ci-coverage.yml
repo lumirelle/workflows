@@ -27,7 +27,7 @@ jobs:
     steps:
       - name: Setup Bun
         if: ${{ inputs.runtime == 'bun' }}
-        uses: lumirelle/workflows/setup-bun@v3
+        uses: lumirelle/workflows/setup-bun@v4
 
       - name: Test
         run: ${{ inputs.test }}
@@ -45,7 +45,7 @@ jobs:
     steps:
       - name: Setup Node
         if: ${{ inputs.runtime == 'node' }}
-        uses: lumirelle/workflows/setup-node@v3
+        uses: lumirelle/workflows/setup-node@v4
 
       - name: Test
         run: ${{ inputs.test }}
