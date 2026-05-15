@@ -13,16 +13,6 @@ on:
         type: string
         default: bun
 
-      build-for-test:
-        required: false
-        type: boolean
-        default: true
-
-      build:
-        required: false
-        type: string
-        default: nr build
-
       test:
         required: false
         type: string
@@ -38,10 +28,6 @@ jobs:
       - name: Setup Bun
         if: ${{ inputs.runtime == 'bun' }}
         uses: lumirelle/workflows/setup-bun@v3
-
-      - name: Build
-        if: ${{ inputs.build-for-test }}
-        run: ${{ inputs.build }}
 
       - name: Test
         run: ${{ inputs.test }}
@@ -60,10 +46,6 @@ jobs:
       - name: Setup Node
         if: ${{ inputs.runtime == 'node' }}
         uses: lumirelle/workflows/setup-node@v3
-
-      - name: Build
-        if: ${{ inputs.build-for-test }}
-        run: ${{ inputs.build }}
 
       - name: Test
         run: ${{ inputs.test }}

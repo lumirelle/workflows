@@ -33,21 +33,6 @@ on:
         type: string
         default: bun
 
-      build-for-check:
-        required: false
-        type: boolean
-        default: true
-
-      build-for-test:
-        required: false
-        type: boolean
-        default: true
-
-      build:
-        required: false
-        type: string
-        default: nr build
-
       check:
         required: false
         type: string
@@ -71,10 +56,6 @@ jobs:
         if: ${{ inputs.runtime == 'node' }}
         uses: lumirelle/workflows/setup-node@v3
 
-      - name: Build
-        if: ${{ inputs.build-for-check }}
-        run: ${{ inputs.build }}
-
       - name: Check
         if: ${{ inputs.check != '' }}
         run: ${{ inputs.check }}
@@ -94,10 +75,6 @@ jobs:
         with:
           bun-version: ${{ matrix.bun }}
 
-      - name: Build
-        if: ${{ inputs.build-for-test }}
-        run: ${{ inputs.build }}
-
       - name: Test
         run: ${{ inputs.test }}
 
@@ -115,10 +92,6 @@ jobs:
         uses: lumirelle/workflows/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-
-      - name: Build
-        if: ${{ inputs.build-for-test }}
-        run: ${{ inputs.build }}
 
       - name: Test
         run: ${{ inputs.test }}

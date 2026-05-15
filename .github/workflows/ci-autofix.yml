@@ -13,16 +13,6 @@ on:
         type: string
         default: bun
 
-      build-for-fix:
-        required: false
-        type: boolean
-        default: true
-
-      build:
-        required: false
-        type: string
-        default: nr build
-
       fix:
         required: false
         type: string
@@ -41,10 +31,6 @@ jobs:
         with:
           frozen-lockfile: false
 
-      - name: Build
-        if: ${{ inputs.build-for-fix }}
-        run: ${{ inputs.build }}
-
       - name: Fix
         run: ${{ inputs.fix }}
 
@@ -62,10 +48,6 @@ jobs:
         uses: lumirelle/workflows/setup-node@v3
         with:
           frozen-lockfile: false
-
-      - name: Build
-        if: ${{ inputs.build-for-fix }}
-        run: ${{ inputs.build }}
 
       - name: Fix
         run: ${{ inputs.fix }}
