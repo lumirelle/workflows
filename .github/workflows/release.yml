@@ -56,10 +56,10 @@ jobs:
 
       - name: Generate GitHub Changelog
         if: ${{ inputs.changelog }}
-        run: nlx -b changelogithub
+        run: nlx --bun changelogithub
         continue-on-error: true
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build
         if: ${{ inputs.build != '' && inputs.publish }}
