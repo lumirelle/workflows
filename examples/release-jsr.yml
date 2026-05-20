@@ -13,4 +13,4 @@ jobs:
       contents: read
       id-token: write
     with:
-      publish: false
+      publish: true
