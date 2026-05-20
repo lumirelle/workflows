@@ -27,11 +27,11 @@ jobs:
     steps:
       - name: Setup Bun
         if: ${{ inputs.runtime == 'bun' }}
-        uses: lumirelle/workflows/setup-bun@v4
+        uses: lumirelle/workflows/setup-bun@v5
 
       - name: Setup Node
         if: ${{ inputs.runtime == 'node' }}
-        uses: lumirelle/workflows/setup-node@v4
+        uses: lumirelle/workflows/setup-node@v5
 
       - name: Build
         if: ${{ inputs.build != '' && inputs.publish }}
