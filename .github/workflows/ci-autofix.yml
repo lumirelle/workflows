@@ -16,7 +16,7 @@ on:
       fix:
         required: false
         type: string
-        default: nr lint:fix
+        default: nr lint:fix --if-present
 
 jobs:
   autofix-bun:
