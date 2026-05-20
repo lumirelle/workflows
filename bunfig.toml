@@ -1,5 +1,2 @@
 [install]
 linker = "isolated"
-
-[install.registry]
-url = "https://registry.npmjs.org"
