@@ -76,6 +76,7 @@ jobs:
           bun-version: ${{ matrix.bun }}
 
       - name: Test
+        if: ${{ inputs.test != '' }}
         run: ${{ inputs.test }}
 
   test-node:
@@ -94,4 +95,5 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Test
+        if: ${{ inputs.test != '' }}
         run: ${{ inputs.test }}

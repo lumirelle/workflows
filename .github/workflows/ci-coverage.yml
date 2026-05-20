@@ -30,6 +30,7 @@ jobs:
         uses: lumirelle/workflows/setup-bun@v4
 
       - name: Test
+        if: ${{ inputs.test != '' }}
         run: ${{ inputs.test }}
 
       - name: Upload coverage to Codecov
@@ -48,6 +49,7 @@ jobs:
         uses: lumirelle/workflows/setup-node@v4
 
       - name: Test
+        if: ${{ inputs.test != '' }}
         run: ${{ inputs.test }}
 
       - name: Upload coverage to Codecov
