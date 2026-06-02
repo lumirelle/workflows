@@ -13,3 +13,5 @@ jobs:
     uses: lumirelle/workflows/.github/workflows/ci-coverage.yml@main
     permissions:
       id-token: write
+    with:
+      debug: true

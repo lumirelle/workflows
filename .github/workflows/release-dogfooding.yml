@@ -14,3 +14,4 @@ jobs:
       id-token: write
     with:
       packages: '"./.github/*", "./*"'
+      debug: true

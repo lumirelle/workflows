@@ -1,0 +1,72 @@
+name: Setup Mise
+description: Setup Mise environment
+
+inputs:
+  persist-credentials:
+    description: Whether to configure the token or SSH key with the local git config
+    default: 'false'
+
+  fetch-all:
+    description: Whether to fetch all history for all branches and tags.
+    default: 'false'
+
+  mise-local-config:
+    description: Custom content for the `mise.local.toml` configuration file. This will be appended to the generated `mise.local.toml`.
+    default: ''
+
+  mise-version:
+    description: 'Version Spec of the version to use. Examples: 2026.3.10. When the version is not specified, latest is used.'
+    default: ''
+
+  auto-install:
+    description: Whether to automatically install dependencies.
+    default: 'true'
+
+  package-manager:
+    description: 'Package manager to use for installing dependencies. Options: pnpm, bun.'
+    default: bun
+
+  frozen-lockfile:
+    description: Whether to enable frozen lockfile installation.
+    default: 'true'
+
+  debug:
+    description: Whether to enable debug logging.
+    default: 'false'
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        persist-credentials: ${{ inputs.persist-credentials }}
+        fetch-depth: "${{ inputs.fetch-all == 'true' && '0' || '1' }}"
+
+    - name: Setup Mise Local Config
+      if: ${{ inputs.mise-local-config != '' }}
+      shell: bash
+      run: |
+        set -e
+        echo "${{ inputs.mise-local-config }}" >> mise.local.toml
+        if [[ ${{ inputs.debug }} == 'true' ]]; then
+          echo "Content of mise.local.toml:"
+          cat mise.local.toml
+        fi
+
+    - name: Setup Mise
+      uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
+      with:
+        version: ${{ inputs.mise-version }}
+        log_level: ${{ inputs.debug == 'true' && 'debug' || 'info' }}
+        experimental: true
+
+    - name: Install dependencies (Bun)
+      if: ${{ inputs.auto-install && inputs.package-manager == 'bun' }}
+      shell: bash
+      run: bun install ${{ inputs.frozen-lockfile == 'true' && '--frozen-lockfile' || '' }}
+
+    - name: Install dependencies (PNPM)
+      if: ${{ inputs.auto-install && inputs.package-manager == 'pnpm' }}
+      shell: bash
+      run: pnpm install ${{ inputs.frozen-lockfile == 'false' && '--no-frozen-lockfile' || '' }}

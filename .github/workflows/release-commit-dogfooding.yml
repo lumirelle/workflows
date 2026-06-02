@@ -10,3 +10,4 @@ jobs:
     with:
       packages: '"./.github/*", "./*"'
       compact: true
+      debug: true

@@ -13,22 +13,17 @@ on:
         type: string
         default: '"ubuntu-slim", "macos-latest", "windows-latest"'
 
-      bun-versions:
+      runtime-versions:
         required: false
         type: string
-        default: '"latest"'
-
-      node-versions:
-        required: false
-        type: string
-        default: '22, 24, 26'
+        default: '"bun = \\\"latest\\\""'
 
       skip-check:
         required: false
         type: boolean
         default: false
 
-      runtime:
+      package-manager:
         required: false
         type: string
         default: bun
@@ -36,64 +31,49 @@ on:
       check:
         required: false
         type: string
-        default: nr check --if-present
+        default: run check --if-present
 
       test:
         required: false
         type: string
-        default: nr test --if-present
+        default: run test --if-present
+
+      debug:
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   check:
     if: ${{ !inputs.skip-check }}
     runs-on: ${{ inputs.primary-os }}
     steps:
-      - name: Setup Bun
-        if: ${{ inputs.runtime == 'bun' }}
-        uses: lumirelle/workflows/setup-bun@v5
-
-      - name: Setup Node
-        if: ${{ inputs.runtime == 'node' }}
-        uses: lumirelle/workflows/setup-node@v5
+      - name: Setup Mise
+        uses: lumirelle/workflows/setup-mise@main
+        with:
+          package-manager: ${{ inputs.package-manager }}
 
       - name: Check
         if: ${{ inputs.check != '' }}
-        run: ${{ inputs.check }}
+        run: ${{ inputs.package-manager }} ${{ inputs.check }}
 
-  test-bun:
-    if: ${{ inputs.runtime == 'bun' }}
+  test:
     strategy:
       matrix:
         os: ${{ fromJson(format('[{0}]', inputs.os-matrix)) }}
-        bun: ${{ fromJson(format('[{0}]', inputs.bun-versions)) }}
+        runtime: ${{ fromJson(format('[{0}]', inputs.runtime-versions)) }}
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Setup Bun ${{ matrix.bun }}
-        if: ${{ inputs.runtime == 'bun' }}
-        uses: lumirelle/workflows/setup-bun@v5
+      - name: Setup Mise
+        uses: lumirelle/workflows/setup-mise@main
         with:
-          bun-version: ${{ matrix.bun }}
+          mise-local-config: |
+            [tools]
+            ${{ matrix.runtime }}
+          package-manager: ${{ inputs.package-manager }}
+          debug: ${{ inputs.debug }}
 
       - name: Test
         if: ${{ inputs.test != '' }}
-        run: ${{ inputs.test }}
-
-  test-node:
-    if: ${{ inputs.runtime == 'node' }}
-    strategy:
-      matrix:
-        os: ${{ fromJson(format('[{0}]', inputs.os-matrix)) }}
-        node: ${{ fromJson(format('[{0}]', inputs.node-versions)) }}
-      fail-fast: false
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Setup Node ${{ matrix.node }}
-        if: ${{ inputs.runtime == 'node' }}
-        uses: lumirelle/workflows/setup-node@v5
-        with:
-          node-version: ${{ matrix.node }}
-
-      - name: Test
-        if: ${{ inputs.test != '' }}
-        run: ${{ inputs.test }}
+        run: ${{ inputs.package-manager }} ${{ inputs.test }}

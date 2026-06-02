@@ -12,3 +12,5 @@ jobs:
     uses: lumirelle/workflows/.github/workflows/ci-autofix.yml@main
     permissions:
       contents: read
+    with:
+      debug: true

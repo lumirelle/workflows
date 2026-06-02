@@ -3,7 +3,7 @@ name: Release Commit
 on:
   workflow_call:
     inputs:
-      runtime:
+      package-manager:
         required: false
         type: string
         default: bun
@@ -11,7 +11,7 @@ on:
       build:
         required: false
         type: string
-        default: nr build
+        default: run build
 
       publish:
         required: false
@@ -28,17 +28,37 @@ on:
         type: string
         default: ''
 
+      debug:
+        required: false
+        type: boolean
+        default: false
+
 jobs:
   release-commit:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Bun
-        if: ${{ inputs.runtime == 'bun' }}
-        uses: lumirelle/workflows/setup-bun@v5
+      - name: Setup Mise
+        uses: lumirelle/workflows/setup-mise@main
+        with:
+          mise-local-config: |
+            [tools]
+            \"npm:pkg-pr-new\" = \"latest\"
+          package-manager: ${{ inputs.package-manager }}
+          debug: ${{ inputs.debug }}
 
-      - name: Setup Node
-        if: ${{ inputs.runtime == 'node' }}
-        uses: lumirelle/workflows/setup-node@v5
+      - name: Debug
+        if: ${{ inputs.debug }}
+        shell: bash
+        run: |
+          set -e
+          cat mise.local.toml
+          which mise
+          mise --version
+          mise doctor
+          which ${{ inputs.package-manager }}
+          ${{ inputs.package-manager }} --version
+          which pkg-pr-new
+          pkg-pr-new --version
 
       - name: Build
         if: ${{ inputs.build != '' && inputs.publish }}
@@ -46,4 +66,4 @@ jobs:
 
       - name: Publish
         if: ${{ inputs.publish }}
-        run: nlx pkg-pr-new publish ${{ inputs.runtime == 'bun' && '--bun' || '' }} ${{ inputs.runtime == 'node' && '--pnpm' || '' }} ${{ inputs.compact && '--compact' || '' }} ${{ inputs.packages}}
+        run: pkg-pr-new publish ${{ inputs.package-manager == 'bun' && '--bun' || '' }} ${{ inputs.package-manager == 'pnpm' && '--pnpm' || '' }} ${{ inputs.compact && '--compact' || '' }} ${{ inputs.packages }}

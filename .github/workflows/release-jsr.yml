@@ -3,7 +3,7 @@ name: Release JSR
 on:
   workflow_call:
     inputs:
-      runtime:
+      package-manager:
         required: false
         type: string
         default: bun
@@ -11,9 +11,14 @@ on:
       build:
         required: false
         type: string
-        default: nr build
+        default: run build
 
       publish:
+        required: false
+        type: boolean
+        default: false
+
+      debug:
         required: false
         type: boolean
         default: false
@@ -25,18 +30,33 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - name: Setup Bun
-        if: ${{ inputs.runtime == 'bun' }}
-        uses: lumirelle/workflows/setup-bun@v5
+      - name: Setup Mise
+        uses: lumirelle/workflows/setup-mise@main
+        with:
+          mise-local-config: |
+            [tools]
+            \"npm:jsr\" = \"latest\"
+          package-manager: ${{ inputs.package-manager }}
+          debug: ${{ inputs.debug }}
 
-      - name: Setup Node
-        if: ${{ inputs.runtime == 'node' }}
-        uses: lumirelle/workflows/setup-node@v5
+      - name: Debug
+        if: ${{ inputs.debug }}
+        shell: bash
+        run: |
+          set -e
+          cat mise.local.toml
+          which mise
+          mise --version
+          mise doctor
+          which ${{ inputs.package-manager }}
+          ${{ inputs.package-manager }} --version
+          which jsr
+          jsr --version
 
       - name: Build
         if: ${{ inputs.build != '' && inputs.publish }}
-        run: ${{ inputs.build }}
+        run: ${{ inputs.package-manager }} ${{ inputs.build }}
 
       - name: Publish
         if: ${{ inputs.publish }}
-        run: nlx jsr publish
+        run: jsr publish
