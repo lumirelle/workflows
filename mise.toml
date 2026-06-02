@@ -63,4 +63,9 @@ depends = [
 
 [tasks.release]
 depends = "prerelease"
-run = "bumpp && bun run ./release.sh"
+run = "bumpp"
+raw = true
+depends_post = "postrelease"
+
+[tasks.postrelease]
+run = "bun run ./release.sh"
