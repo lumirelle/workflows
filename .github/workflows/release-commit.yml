@@ -62,7 +62,7 @@ jobs:
 
       - name: Build
         if: ${{ inputs.build != '' && inputs.publish }}
-        run: ${{ inputs.build }}
+        run: ${{ inputs.package-manager }} ${{ inputs.build }}
 
       - name: Publish
         if: ${{ inputs.publish }}
