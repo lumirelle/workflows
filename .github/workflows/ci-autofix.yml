@@ -30,7 +30,7 @@ jobs:
       contents: read
     steps:
       - name: Setup Mise
-        uses: lumirelle/workflows/setup-mise@main
+        uses: lumirelle/workflows/setup-mise@v6
         with:
           package-manager: ${{ inputs.package-manager }}
           frozen-lockfile: false

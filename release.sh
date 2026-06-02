@@ -1,1 +1,1 @@
-git update-ref refs/heads/v5 refs/heads/main && git push origin v5 --force
+git update-ref refs/heads/v6 refs/heads/main && git push origin v6 --force
