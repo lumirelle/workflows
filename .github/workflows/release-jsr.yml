@@ -3,6 +3,11 @@ name: Release JSR
 on:
   workflow_call:
     inputs:
+      debug:
+        required: false
+        type: boolean
+        default: false
+
       build:
         required: false
         type: string
@@ -13,7 +18,7 @@ on:
         type: boolean
         default: false
 
-      debug:
+      dry-run:
         required: false
         type: boolean
         default: false
@@ -27,39 +32,14 @@ jobs:
     steps:
       - name: Setup Mise
         id: setup-mise
-        uses: lumirelle/workflows/setup-mise@v6
+        uses: lumirelle/workflows/setup-mise@main
         with:
           mise-local-config-tools: \"npm:jsr\" = \"latest\"
           debug: ${{ inputs.debug }}
 
-      - name: Debug
-        if: ${{ inputs.debug }}
-        env:
-          PACKAGE_MANAGER_NAME: ${{ steps.setup-mise.outputs.PACKAGE_MANAGER_NAME }}
-        shell: bash
-        run: |
-          set -e
-
-          echo "========== Mise local config: =========="
-          cat mise.local.toml
-
-          echo "========== Mise info: =========="
-          which mise
-          mise --version
-          mise doctor
-
-          echo "========== Package manager info: =========="
-          which ${{ env.PACKAGE_MANAGER_NAME }}
-          ${{ env.PACKAGE_MANAGER_NAME }} --version
-
-          echo "========== jsr info: =========="
-          which jsr
-          jsr --version
-
       - name: Build
-        if: ${{ inputs.build != '' && inputs.publish }}
         run: ${{ inputs.build }}
 
       - name: Publish
         if: ${{ inputs.publish }}
-        run: jsr publish
+        run: jsr publish ${{ inputs.dry-run && '--dry-run' || '' }}

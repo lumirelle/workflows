@@ -1,6 +1,9 @@
 [env]
 _.path = [ "./node_modules/.bin" ]
 
+[hooks]
+postinstall = "bun install"
+
 [tools]
 bun = "latest"
 

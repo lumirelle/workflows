@@ -25,12 +25,11 @@ jobs:
       id-token: write
     steps:
       - name: Setup Mise
-        uses: lumirelle/workflows/setup-mise@v6
+        uses: lumirelle/workflows/setup-mise@main
         with:
           debug: ${{ inputs.debug }}
 
       - name: Test
-        if: ${{ inputs.test != '' }}
         run: ${{ inputs.test }}
 
       - name: Upload coverage to Codecov

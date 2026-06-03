@@ -18,22 +18,9 @@ inputs:
     description: 'Version Spec of the version to use. Examples: 2026.3.10. When the version is not specified, latest is used.'
     default: ''
 
-  auto-install:
-    description: Whether to automatically install dependencies.
-    default: 'true'
-
-  frozen-lockfile:
-    description: Whether to enable frozen lockfile installation.
-    default: 'true'
-
   debug:
     description: Whether to enable debug logging.
     default: 'false'
-
-outputs:
-  PACKAGE_MANAGER_NAME:
-    description: Package manager name detected by ni.
-    value: ${{ steps.detect-package-manager.outputs.PACKAGE_MANAGER_NAME }}
 
 runs:
   using: composite
@@ -45,14 +32,11 @@ runs:
         fetch-depth: "${{ inputs.fetch-all == 'true' && '0' || '1' }}"
 
     - name: Setup Mise Local Config
+      if: ${{ inputs.mise-local-config-tools != '' }}
       shell: bash
       run: |
         set -e
         echo "[tools]
-          # We may need this until GitHub's hosted runners have a new enough npm version.
-          # See https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/.
-          npm = \"latest\"
-          \"npm:@antfu/ni\" = \"latest\"
           ${{ inputs.mise-local-config-tools }}
         " >> mise.local.toml
         if [[ ${{ inputs.debug }} == 'true' ]]; then
@@ -67,13 +51,11 @@ runs:
         log_level: ${{ inputs.debug == 'true' && 'debug' || 'info' }}
         experimental: true
 
-    - name: Install Dependencies
-      if: ${{ inputs.auto-install }}
-      shell: bash
-      run: ni ${{ inputs.frozen-lockfile == 'false' && '--no-frozen-lockfile' || '' }}
-
-    - name: Detect Package Manager Name
-      id: detect-package-manager
+    - name: Mise Doctor
+      if: ${{ inputs.debug }}
       shell: bash
       run: |
-        echo "PACKAGE_MANAGER_NAME=$(ni --agent)" >> $GITHUB_OUTPUT
+        set -e
+        which mise
+        mise --version
+        mise doctor

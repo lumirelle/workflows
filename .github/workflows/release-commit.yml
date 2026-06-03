@@ -3,6 +3,11 @@ name: Release Commit
 on:
   workflow_call:
     inputs:
+      debug:
+        required: false
+        type: boolean
+        default: false
+
       build:
         required: false
         type: string
@@ -12,6 +17,11 @@ on:
         required: false
         type: boolean
         default: false
+
+      workspace-style:
+        required: false
+        type: string
+        default: bun
 
       compact:
         required: false
@@ -23,51 +33,20 @@ on:
         type: string
         default: ''
 
-      debug:
-        required: false
-        type: boolean
-        default: false
-
 jobs:
   release-commit:
     runs-on: ubuntu-latest
     steps:
       - name: Setup Mise
         id: setup-mise
-        uses: lumirelle/workflows/setup-mise@v6
+        uses: lumirelle/workflows/setup-mise@main
         with:
           mise-local-config-tools: \"npm:pkg-pr-new\" = \"latest\"
           debug: ${{ inputs.debug }}
 
-      - name: Debug
-        if: ${{ inputs.debug }}
-        env:
-          PACKAGE_MANAGER_NAME: ${{ steps.setup-mise.outputs.PACKAGE_MANAGER_NAME }}
-        shell: bash
-        run: |
-          set -e
-          echo "========== Mise local config: =========="
-          cat mise.local.toml
-
-          echo "========== Mise info: =========="
-          which mise
-          mise --version
-          mise doctor
-
-          echo "========== Package manager info: =========="
-          which ${{ env.PACKAGE_MANAGER_NAME }}
-          ${{ env.PACKAGE_MANAGER_NAME }} --version
-
-          echo "========== pkg-pr-new info: =========="
-          which pkg-pr-new
-          pkg-pr-new --version
-
       - name: Build
-        if: ${{ inputs.build != '' && inputs.publish }}
         run: ${{ inputs.build }}
 
       - name: Publish
         if: ${{ inputs.publish }}
-        env:
-          PACKAGE_MANAGER_NAME: ${{ steps.setup-mise.outputs.PACKAGE_MANAGER_NAME }}
-        run: pkg-pr-new publish ${{ env.PACKAGE_MANAGER_NAME && format('--{0}', env.PACKAGE_MANAGER_NAME) || '' }} ${{ inputs.compact && '--compact' || '' }} ${{ inputs.packages }}
+        run: pkg-pr-new publish ${{ inputs.workspace-style && format('--{0}', inputs.workspace-style) || '' }} ${{ inputs.compact && '--compact' || '' }} ${{ inputs.packages }}

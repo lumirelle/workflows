@@ -18,11 +18,6 @@ on:
         type: string
         default: '"bun = \\\"latest\\\""'
 
-      skip-check:
-        required: false
-        type: boolean
-        default: false
-
       check:
         required: false
         type: string
@@ -40,14 +35,12 @@ on:
 
 jobs:
   check:
-    if: ${{ !inputs.skip-check }}
     runs-on: ${{ inputs.primary-os }}
     steps:
       - name: Setup Mise
-        uses: lumirelle/workflows/setup-mise@v6
+        uses: lumirelle/workflows/setup-mise@main
 
       - name: Check
-        if: ${{ inputs.check != '' }}
         run: ${{ inputs.check }}
 
   test:
@@ -59,11 +52,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Setup Mise
-        uses: lumirelle/workflows/setup-mise@v6
+        uses: lumirelle/workflows/setup-mise@main
         with:
           mise-local-config-tools: ${{ matrix.runtime }}
           debug: ${{ inputs.debug }}
 
       - name: Test
-        if: ${{ inputs.test != '' }}
         run: ${{ inputs.test }}
