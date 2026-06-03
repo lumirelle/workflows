@@ -39,7 +39,7 @@ jobs:
     steps:
       - name: Setup Mise
         id: setup-mise
-        uses: lumirelle/workflows/setup-mise@main
+        uses: lumirelle/workflows/setup-mise@v7
         with:
           mise-local-config-tools: \"npm:pkg-pr-new\" = \"latest\"
           debug: ${{ inputs.debug }}
