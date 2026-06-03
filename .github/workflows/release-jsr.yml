@@ -26,6 +26,7 @@ jobs:
       id-token: write
     steps:
       - name: Setup Mise
+        id: setup-mise
         uses: lumirelle/workflows/setup-mise@v6
         with:
           mise-local-config-tools: \"npm:jsr\" = \"latest\"
@@ -33,15 +34,25 @@ jobs:
 
       - name: Debug
         if: ${{ inputs.debug }}
+        env:
+          PACKAGE_MANAGER_NAME: ${{ steps.setup-mise.outputs.PACKAGE_MANAGER_NAME }}
         shell: bash
         run: |
           set -e
+
+          echo "Mise local config:"
           cat mise.local.toml
+
+          echo "Mise info:"
           which mise
           mise --version
           mise doctor
-          which ni
-          ni --version
+
+          echo "Package manager info:"
+          which ${{ env.PACKAGE_MANAGER_NAME }}
+          ${{ env.PACKAGE_MANAGER_NAME }} --version
+
+          echo "jsr info:"
           which jsr
           jsr --version
 

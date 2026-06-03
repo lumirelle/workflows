@@ -8,11 +8,6 @@ on:
         type: boolean
         default: true
 
-      package-manager:
-        required: false
-        type: string
-        default: bun
-
       build:
         required: false
         type: string
@@ -47,6 +42,7 @@ jobs:
       contents: write
     steps:
       - name: Setup Mise
+        id: setup-mise
         uses: lumirelle/workflows/setup-mise@v6
         with:
           mise-local-config-tools: \"npm:changelogithub\" = \"latest\"
@@ -55,15 +51,25 @@ jobs:
 
       - name: Debug
         if: ${{ inputs.debug }}
+        env:
+          PACKAGE_MANAGER_NAME: ${{ steps.setup-mise.outputs.PACKAGE_MANAGER_NAME }}
         shell: bash
         run: |
           set -e
-          which mise
+
+          echo "Mise local config:"
           cat mise.local.toml
+
+          echo "Mise info:"
+          which mise
           mise --version
           mise doctor
-          which ni
-          ni --version
+
+          echo "Package manager info:"
+          which ${{ env.PACKAGE_MANAGER_NAME }}
+          ${{ env.PACKAGE_MANAGER_NAME }} --version
+
+          echo "changelogithub info:"
           which changelogithub
           changelogithub --version
 
@@ -78,60 +84,64 @@ jobs:
         if: ${{ inputs.build != '' }}
         run: ${{ inputs.build }}
 
-      - name: Publish To NPM (Bun)
-        if: ${{ inputs.package-manager == 'bun' && inputs.publish }}
+      - name: Publish To NPM
+        if: ${{ inputs.publish }}
+        env:
+          PACKAGE_MANAGER_NAME: ${{ steps.setup-mise.outputs.PACKAGE_MANAGER_NAME }}
         run: |
           set -euo pipefail
           shopt -s nullglob
 
-          raw_packages='${{ inputs.packages }}'
-          # Support values like: ., ./packages/*, ".", "./packages/*", and comma/space-separated forms.
-          normalized_packages="$raw_packages"
-          normalized_packages="${normalized_packages//,/ }"
-          normalized_packages="${normalized_packages//\"/}"
-          normalized_packages="${normalized_packages//\'/}"
-          read -r -a package_patterns <<< "$normalized_packages"
+          if [[ "${{ env.PACKAGE_MANAGER_NAME }}" != "bun" ]]; then
+            echo "This project uses ${PACKAGE_MANAGER_NAME}, publishing with it."
+            ${{ env.PACKAGE_MANAGER_NAME }} publish --access public ${{ inputs.tag && format('--tag {0}', inputs.tag) || '' }}
+          else
+            echo "This project uses Bun, resolving packages from: ${{ inputs.packages }} and publishing with npm."
+            raw_packages='${{ inputs.packages }}'
+            # Support values like: ., ./packages/*, ".", "./packages/*", and comma/space-separated forms.
+            normalized_packages="$raw_packages"
+            normalized_packages="${normalized_packages//,/ }"
+            normalized_packages="${normalized_packages//\"/}"
+            normalized_packages="${normalized_packages//\'/}"
+            read -r -a package_patterns <<< "$normalized_packages"
 
-          if [[ ${#package_patterns[@]} -eq 0 ]]; then
-            echo "No packages provided."
-            exit 1
-          fi
-
-          declare -a packages=()
-          declare -A seen=()
-          for pattern in "${package_patterns[@]}"; do
-            matched=( $pattern )
-            if [[ ${#matched[@]} -eq 0 ]]; then
-              echo "No package matched pattern: $pattern"
+            if [[ ${#package_patterns[@]} -eq 0 ]]; then
+              echo "No packages provided."
               exit 1
             fi
 
-            for package in "${matched[@]}"; do
-              if [[ ! -d "$package" ]]; then
-                echo "Skipping non-directory match: $package"
-                continue
+            declare -a packages=()
+            declare -A seen=()
+            for pattern in "${package_patterns[@]}"; do
+              matched=( $pattern )
+              if [[ ${#matched[@]} -eq 0 ]]; then
+                echo "No package matched pattern: $pattern"
+                exit 1
               fi
-              if [[ -z "${seen[$package]+x}" ]]; then
-                seen[$package]=1
-                packages+=("$package")
-              fi
+
+              for package in "${matched[@]}"; do
+                if [[ ! -d "$package" ]]; then
+                  echo "Skipping non-directory match: $package"
+                  continue
+                fi
+                if [[ -z "${seen[$package]+x}" ]]; then
+                  seen[$package]=1
+                  packages+=("$package")
+                fi
+              done
             done
-          done
 
-          if [[ ${#packages[@]} -eq 0 ]]; then
-            echo "No package directories resolved from: $raw_packages"
-            exit 1
+            if [[ ${#packages[@]} -eq 0 ]]; then
+              echo "No package directories resolved from: $raw_packages"
+              exit 1
+            fi
+
+            for package in "${packages[@]}"; do
+              (
+                echo "Publishing package: $package"
+                cd "$package"
+                ${{ env.PACKAGE_MANAGER_NAME }} pm pack --filename "$package/release.tgz"
+                npm publish ./release.tgz --access public ${{ inputs.tag && format('--tag {0}', inputs.tag) || '' }}
+              )
+            done
           fi
-
-          for package in "${packages[@]}"; do
-            (
-              echo "Publishing package: $package"
-              cd "$package"
-              ${{ inputs.package-manager }} pm pack --filename "$package/release.tgz"
-              npm publish ./release.tgz --access public ${{ inputs.tag && format('--tag {0}', inputs.tag) || '' }}
-            )
-          done
-
-      - name: Publish To NPM (PNPM)
-        if: ${{ inputs.package-manager == 'pnpm' && inputs.publish }}
-        run: ${{ inputs.package-manager }} publish --access public ${{ inputs.tag && format('--tag {0}', inputs.tag) || '' }}

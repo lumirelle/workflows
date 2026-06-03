@@ -59,7 +59,12 @@ runs:
         log_level: ${{ inputs.debug == 'true' && 'debug' || 'info' }}
         experimental: true
 
-    - name: Install dependencies
+    - name: Install Dependencies
       if: ${{ inputs.auto-install }}
       shell: bash
       run: ni ${{ inputs.frozen-lockfile == 'false' && '--no-frozen-lockfile' || '' }}
+
+    - name: Detect Package Manager Name
+      shell: bash
+      run: |
+        echo "PACKAGE_MANAGER_NAME=$(ni --agent)" >> $GITHUB_OUTPUT
