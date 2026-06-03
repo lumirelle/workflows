@@ -3,15 +3,10 @@ name: Release JSR
 on:
   workflow_call:
     inputs:
-      package-manager:
-        required: false
-        type: string
-        default: bun
-
       build:
         required: false
         type: string
-        default: run build
+        default: mise run build
 
       publish:
         required: false
@@ -33,10 +28,7 @@ jobs:
       - name: Setup Mise
         uses: lumirelle/workflows/setup-mise@v6
         with:
-          mise-local-config: |
-            [tools]
-            \"npm:jsr\" = \"latest\"
-          package-manager: ${{ inputs.package-manager }}
+          mise-local-config-tools: \"npm:jsr\" = \"latest\"
           debug: ${{ inputs.debug }}
 
       - name: Debug
@@ -48,14 +40,14 @@ jobs:
           which mise
           mise --version
           mise doctor
-          which ${{ inputs.package-manager }}
-          ${{ inputs.package-manager }} --version
+          which ni
+          ni --version
           which jsr
           jsr --version
 
       - name: Build
         if: ${{ inputs.build != '' && inputs.publish }}
-        run: ${{ inputs.package-manager }} ${{ inputs.build }}
+        run: ${{ inputs.build }}
 
       - name: Publish
         if: ${{ inputs.publish }}

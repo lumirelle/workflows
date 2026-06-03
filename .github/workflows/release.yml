@@ -16,7 +16,7 @@ on:
       build:
         required: false
         type: string
-        default: run build
+        default: mise run build
 
       publish:
         required: false
@@ -49,10 +49,7 @@ jobs:
       - name: Setup Mise
         uses: lumirelle/workflows/setup-mise@v6
         with:
-          mise-local-config: |
-            [tools]
-            \"npm:changelogithub\" = \"latest\"
-          package-manager: ${{ inputs.package-manager }}
+          mise-local-config-tools: \"npm:changelogithub\" = \"latest\"
           fetch-all: true
           debug: ${{ inputs.debug }}
 
@@ -65,8 +62,8 @@ jobs:
           cat mise.local.toml
           mise --version
           mise doctor
-          which ${{ inputs.package-manager }}
-          ${{ inputs.package-manager }} --version
+          which ni
+          ni --version
           which changelogithub
           changelogithub --version
 
@@ -79,7 +76,7 @@ jobs:
 
       - name: Build
         if: ${{ inputs.build != '' }}
-        run: ${{ inputs.package-manager }} ${{ inputs.build }}
+        run: ${{ inputs.build }}
 
       - name: Publish To NPM (Bun)
         if: ${{ inputs.package-manager == 'bun' && inputs.publish }}

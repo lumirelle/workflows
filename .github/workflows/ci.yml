@@ -23,20 +23,15 @@ on:
         type: boolean
         default: false
 
-      package-manager:
-        required: false
-        type: string
-        default: bun
-
       check:
         required: false
         type: string
-        default: run check --if-present
+        default: mise run check
 
       test:
         required: false
         type: string
-        default: run test --if-present
+        default: mise run test
 
       debug:
         required: false
@@ -50,12 +45,10 @@ jobs:
     steps:
       - name: Setup Mise
         uses: lumirelle/workflows/setup-mise@v6
-        with:
-          package-manager: ${{ inputs.package-manager }}
 
       - name: Check
         if: ${{ inputs.check != '' }}
-        run: ${{ inputs.package-manager }} ${{ inputs.check }}
+        run: ${{ inputs.check }}
 
   test:
     strategy:
@@ -68,12 +61,9 @@ jobs:
       - name: Setup Mise
         uses: lumirelle/workflows/setup-mise@v6
         with:
-          mise-local-config: |
-            [tools]
-            ${{ matrix.runtime }}
-          package-manager: ${{ inputs.package-manager }}
+          mise-local-config-tools: ${{ matrix.runtime }}
           debug: ${{ inputs.debug }}
 
       - name: Test
         if: ${{ inputs.test != '' }}
-        run: ${{ inputs.package-manager }} ${{ inputs.test }}
+        run: ${{ inputs.test }}

@@ -8,15 +8,10 @@ on:
         type: string
         default: ubuntu-slim
 
-      package-manager:
-        required: false
-        type: string
-        default: bun
-
       fix:
         required: false
         type: string
-        default: run lint:fix --if-present
+        default: mise run lint:fix
 
       debug:
         required: false
@@ -32,13 +27,12 @@ jobs:
       - name: Setup Mise
         uses: lumirelle/workflows/setup-mise@v6
         with:
-          package-manager: ${{ inputs.package-manager }}
           frozen-lockfile: false
           debug: ${{ inputs.debug }}
 
       - name: Fix
         if: ${{ inputs.fix != '' }}
-        run: ${{ inputs.package-manager }} ${{ inputs.fix }}
+        run: ${{ inputs.fix }}
 
       - name: Commit
         uses: autofix-ci/action@7a166d7532b277f34e16238930461bf77f9d7ed8 # v1.3.3

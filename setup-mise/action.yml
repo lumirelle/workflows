@@ -10,8 +10,8 @@ inputs:
     description: Whether to fetch all history for all branches and tags.
     default: 'false'
 
-  mise-local-config:
-    description: Custom content for the `mise.local.toml` configuration file. This will be appended to the generated `mise.local.toml`.
+  mise-local-config-tools:
+    description: Custom content of tools field for the `mise.local.toml` configuration file.
     default: ''
 
   mise-version:
@@ -21,10 +21,6 @@ inputs:
   auto-install:
     description: Whether to automatically install dependencies.
     default: 'true'
-
-  package-manager:
-    description: 'Package manager to use for installing dependencies. Options: pnpm, bun.'
-    default: bun
 
   frozen-lockfile:
     description: Whether to enable frozen lockfile installation.
@@ -44,11 +40,11 @@ runs:
         fetch-depth: "${{ inputs.fetch-all == 'true' && '0' || '1' }}"
 
     - name: Setup Mise Local Config
-      if: ${{ inputs.mise-local-config != '' }}
+      if: ${{ inputs.mise-local-config-tools != '' }}
       shell: bash
       run: |
         set -e
-        echo "${{ inputs.mise-local-config }}" >> mise.local.toml
+        echo "[tools]\n\"npm:@antfu/ni\" = \"latest\"\n${{ inputs.mise-local-config-tools }}" >> mise.local.toml
         if [[ ${{ inputs.debug }} == 'true' ]]; then
           echo "Content of mise.local.toml:"
           cat mise.local.toml
@@ -61,12 +57,7 @@ runs:
         log_level: ${{ inputs.debug == 'true' && 'debug' || 'info' }}
         experimental: true
 
-    - name: Install dependencies (Bun)
-      if: ${{ inputs.auto-install && inputs.package-manager == 'bun' }}
+    - name: Install dependencies
+      if: ${{ inputs.auto-install }}
       shell: bash
-      run: bun install ${{ inputs.frozen-lockfile == 'true' && '--frozen-lockfile' || '' }}
-
-    - name: Install dependencies (PNPM)
-      if: ${{ inputs.auto-install && inputs.package-manager == 'pnpm' }}
-      shell: bash
-      run: pnpm install ${{ inputs.frozen-lockfile == 'false' && '--no-frozen-lockfile' || '' }}
+      run: ni ${{ inputs.frozen-lockfile == 'false' && '--no-frozen-lockfile' || '' }}
