@@ -40,7 +40,6 @@ runs:
         fetch-depth: "${{ inputs.fetch-all == 'true' && '0' || '1' }}"
 
     - name: Setup Mise Local Config
-      if: ${{ inputs.mise-local-config-tools != '' }}
       shell: bash
       run: |
         set -e
