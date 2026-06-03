@@ -46,19 +46,19 @@ jobs:
         shell: bash
         run: |
           set -e
-          echo "Mise local config:"
+          echo "========== Mise local config: =========="
           cat mise.local.toml
 
-          echo "Mise info:"
+          echo "========== Mise info: =========="
           which mise
           mise --version
           mise doctor
 
-          echo "Package manager info:"
+          echo "========== Package manager info: =========="
           which ${{ env.PACKAGE_MANAGER_NAME }}
           ${{ env.PACKAGE_MANAGER_NAME }} --version
 
-          echo "pkg-pr-new info:"
+          echo "========== pkg-pr-new info: =========="
           which pkg-pr-new
           pkg-pr-new --version
 
