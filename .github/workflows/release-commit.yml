@@ -11,7 +11,7 @@ on:
       build:
         required: false
         type: string
-        default: run build
+        default: mise run build
 
       publish:
         required: false
