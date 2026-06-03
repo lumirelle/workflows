@@ -30,6 +30,11 @@ inputs:
     description: Whether to enable debug logging.
     default: 'false'
 
+outputs:
+  PACKAGE_MANAGER_NAME:
+    description: Package manager name detected by ni.
+    value: ${{ steps.detect-package-manager.outputs.PACKAGE_MANAGER_NAME }}
+
 runs:
   using: composite
   steps:
@@ -65,6 +70,7 @@ runs:
       run: ni ${{ inputs.frozen-lockfile == 'false' && '--no-frozen-lockfile' || '' }}
 
     - name: Detect Package Manager Name
+      id: detect-package-manager
       shell: bash
       run: |
         echo "PACKAGE_MANAGER_NAME=$(ni --agent)" >> $GITHUB_OUTPUT
