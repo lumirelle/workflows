@@ -44,9 +44,9 @@ runs:
       shell: bash
       run: |
         set -e
-        echo "[tools]\
-          \"npm:@antfu/ni\" = \"latest\"\
-          ${{ inputs.mise-local-config-tools }}\
+        echo "[tools]
+          \"npm:@antfu/ni\" = \"latest\"
+          ${{ inputs.mise-local-config-tools }}
         " >> mise.local.toml
         if [[ ${{ inputs.debug }} == 'true' ]]; then
           echo "Content of mise.local.toml:"
