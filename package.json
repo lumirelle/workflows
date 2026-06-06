@@ -6,10 +6,8 @@
   "packageManager": "aube@1.17.1",
   "scripts": {
     "prepare": "mise run prepare",
-    "lint:oxlint": "oxlint",
-    "lint:eslint": "eslint",
-    "lint:fix:oxlint": "oxlint --fix",
-    "lint:fix:eslint": "eslint --fix",
+    "oxlint": "oxlint",
+    "eslint": "eslint",
     "release": "bumpp"
   },
   "devDependencies": {

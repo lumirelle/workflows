@@ -14,30 +14,16 @@ run = "nano-staged"
 [tasks.build]
 run = "echo 'Build completed!'"
 
-[tasks."lint:oxlint"]
-run = "aubr lint:oxlint"
-
-[tasks."lint:eslint"]
-wait_for = "lint:oxlint"
-run = "aubr lint:eslint"
-
 [tasks.lint]
-depends = [
-  "lint:oxlint",
-  "lint:eslint"
+run = [
+  "aubr oxlint",
+  "aubr eslint"
 ]
 
-[tasks."lint:fix:oxlint"]
-run = "aubr lint:fix:oxlint"
-
-[tasks."lint:fix:eslint"]
-wait_for = "lint:fix:oxlint"
-run = "aubr lint:fix:eslint"
-
 [tasks."lint:fix"]
-depends = [
-  "lint:fix:oxlint",
-  "lint:fix:eslint"
+run = [ # Runnings are performed sequentially
+  "aubr oxlint --fix",
+  "aubr eslint --fix"
 ]
 
 [tasks.typecheck]
@@ -47,20 +33,20 @@ run = "echo 'Type check successful!'"
 run = "echo 'Unused check successful!'"
 
 [tasks.check]
-depends = [
-  "typecheck",
+run = { tasks = [ # Tasks are performed parallely
   "lint",
+  "typecheck",
   "unused"
-]
+] }
 
 [tasks.test]
 run = "echo 'Tests passed!'"
 
 [tasks.prerelease]
-depends = [
+run = { tasks = [
   "check",
   "test"
-]
+] }
 
 [tasks.release]
 depends = "prerelease"
