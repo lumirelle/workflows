@@ -10,6 +10,8 @@ local linters = new Mapping<String, Step> {
     ["eslint"] = (Builtins.eslint) {
       batch = false
       glob = List("**/*")
+      check = "eslint --no-warn-ignored {{ files }}"
+      fix = "eslint --no-warn-ignored --fix {{ files }}"
       depends = List("oxlint")
     }
 
