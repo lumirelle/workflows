@@ -48,3 +48,9 @@ depends_post = "postrelease"
 
 [tasks.postrelease]
 run = "bun run ./release.sh"
+
+[tasks.publish]
+run = "echo 'Published!'"
+
+[tasks."publish:commit"]
+run = "echo 'Commit published!'"

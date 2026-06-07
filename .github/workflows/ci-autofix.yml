@@ -25,7 +25,7 @@ jobs:
       contents: read
     steps:
       - name: Setup Mise
-        uses: lumirelle/workflows/setup-mise@v7
+        uses: lumirelle/workflows/setup-mise@v8
         with:
           debug: ${{ inputs.debug }}
 

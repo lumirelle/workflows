@@ -8,6 +8,4 @@ jobs:
   release-commit:
     uses: lumirelle/workflows/.github/workflows/release-commit.yml@main
     with:
-      packages: '"./.github/*", "./*"'
-      compact: true
       debug: true

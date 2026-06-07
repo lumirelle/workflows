@@ -20,18 +20,8 @@ on:
 
       publish:
         required: false
-        type: boolean
-        default: false
-
-      dry-run:
-        required: false
-        type: boolean
-        default: false
-
-      tag:
-        required: false
         type: string
-        default: latest
+        default: mise run publish
 
 jobs:
   release:
@@ -42,11 +32,9 @@ jobs:
     steps:
       - name: Setup Mise
         id: setup-mise
-        uses: lumirelle/workflows/setup-mise@v7
+        uses: lumirelle/workflows/setup-mise@v8
         with:
-          mise-local-config-tools: |
-            aube = \"latest\"
-            \"npm:changelogithub\" = \"latest\"
+          mise-local-config-tools: \"npm:changelogithub\" = \"latest\"
           fetch-all: true
           debug: ${{ inputs.debug }}
 
@@ -60,11 +48,5 @@ jobs:
       - name: Build
         run: ${{ inputs.build }}
 
-      - name: Publish To NPM
-        if: ${{ inputs.publish }}
-        run: |
-          set -euo pipefail
-          shopt -s nullglob
-
-          echo "Publishing package with aube."
-          aube publish --access public ${{ inputs.dry-run == 'true' && '--dry-run' || '' }} ${{ inputs.tag && format('--tag {0}', inputs.tag) || '' }}
+      - name: Publish
+        run: ${{ inputs.publish }}
