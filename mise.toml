@@ -16,7 +16,9 @@ sources = [
   "bun.lock"
 ]
 outputs = [ "node_modules/" ]
-run = "aube install"
+# Because aube's output lockfile has bugs,
+# we use `bun install --lockfile-only` to generate a lockfile
+run = "bun install --lockfile-only && aube install"
 auto = true
 
 [tasks.pre-commit]
