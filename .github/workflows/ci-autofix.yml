@@ -11,7 +11,7 @@ on:
       fix:
         required: false
         type: string
-        default: mise run lint:fix
+        default: mise run fix
 
       debug:
         required: false
