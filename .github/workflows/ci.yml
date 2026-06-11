@@ -54,8 +54,22 @@ jobs:
       - name: Setup Mise
         uses: lumirelle/workflows/setup-mise@v8
         with:
-          mise-local-config-tools: ${{ matrix.runtime }}
           debug: ${{ inputs.debug }}
+
+      - name: Setup Runtime
+        run: |
+          set -e
+          echo "[tools]
+            ${{ matrix.runtime }}
+          " >> ~/.config/mise/config.toml
+
+          if [[ ${{ inputs.debug }} == 'true' ]]; then
+            echo "Content of ~/.config/mise/config.toml:"
+            cat ~/.config/mise/config.toml
+            MISE_DEBUG=1 mise install
+          else
+            mise install
+          fi
 
       - name: Test
         run: ${{ inputs.test }}

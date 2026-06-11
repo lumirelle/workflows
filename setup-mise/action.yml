@@ -10,10 +10,6 @@ inputs:
     description: Whether to fetch all history for all branches and tags.
     default: 'false'
 
-  mise-local-config-tools:
-    description: Custom content of tools field for the `mise.local.toml` configuration file.
-    default: ''
-
   mise-version:
     description: 'Version Spec of the version to use. Examples: 2026.3.10. When the version is not specified, latest is used.'
     default: ''
@@ -30,19 +26,6 @@ runs:
       with:
         persist-credentials: ${{ inputs.persist-credentials }}
         fetch-depth: "${{ inputs.fetch-all == 'true' && '0' || '1' }}"
-
-    - name: Setup Mise Local Config
-      if: ${{ inputs.mise-local-config-tools != '' }}
-      shell: bash
-      run: |
-        set -e
-        echo "[tools]
-          ${{ inputs.mise-local-config-tools }}
-        " >> mise.local.toml
-        if [[ ${{ inputs.debug }} == 'true' ]]; then
-          echo "Content of mise.local.toml:"
-          cat mise.local.toml
-        fi
 
     - name: Setup Mise
       uses: jdx/mise-action@dba19683ed58901619b14f395a24841710cb4925 # v4.1.0
