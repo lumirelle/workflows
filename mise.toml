@@ -48,6 +48,9 @@ run = "bumpp"
 raw = true
 depends_post = "postrelease"
 
+[tasks.changelog]
+run = "changelogithub"
+
 [tasks.postrelease]
 run = "bun run ./release.sh"
 

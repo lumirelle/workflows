@@ -10,8 +10,8 @@ on:
 
       changelog:
         required: false
-        type: boolean
-        default: true
+        type: string
+        default: mise run changelog
 
       build:
         required: false
@@ -39,8 +39,8 @@ jobs:
           debug: ${{ inputs.debug }}
 
       - name: Generate GitHub Changelog
-        if: ${{ inputs.changelog }}
-        run: changelogithub
+        if: ${{ inputs.changelog != '' }}
+        run: ${{ inputs.changelog }}
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
