@@ -59,6 +59,7 @@ jobs:
       - name: Setup Runtime
         run: |
           set -e
+          mkdir -p ~/.config/mise
           echo "[tools]
             ${{ matrix.runtime }}
           " > ~/.config/mise/config.toml
