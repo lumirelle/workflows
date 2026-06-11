@@ -38,7 +38,7 @@ jobs:
     runs-on: ${{ inputs.primary-os }}
     steps:
       - name: Setup Mise
-        uses: lumirelle/workflows/setup-mise@v8
+        uses: lumirelle/workflows/setup-mise@v9
 
       - name: Check
         run: ${{ inputs.check }}
@@ -52,7 +52,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Setup Mise
-        uses: lumirelle/workflows/setup-mise@v8
+        uses: lumirelle/workflows/setup-mise@v9
         with:
           debug: ${{ inputs.debug }}
 

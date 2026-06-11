@@ -32,7 +32,7 @@ jobs:
     steps:
       - name: Setup Mise
         id: setup-mise
-        uses: lumirelle/workflows/setup-mise@v8
+        uses: lumirelle/workflows/setup-mise@v9
         with:
           mise-local-config-tools: \"npm:changelogithub\" = \"latest\"
           fetch-all: true
