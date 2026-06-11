@@ -70,7 +70,19 @@ url = "https://github.com/jdx/aube/releases/download/v1.18.2/aube-v1.18.2-x86_64
 url_api = "https://api.github.com/repos/jdx/aube/releases/assets/442312841"
 provenance = "github-attestations"
 
+[tools."github:jdx/aube"."platforms.linux-x64-baseline"]
+checksum = "sha256:2e0b27169c51c77498ccd470da1b59e4d34a4eba8c590fbdd4ba2cfe388a912d"
+url = "https://github.com/jdx/aube/releases/download/v1.18.2/aube-v1.18.2-x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/jdx/aube/releases/assets/442312841"
+provenance = "github-attestations"
+
 [tools."github:jdx/aube"."platforms.linux-x64-musl"]
+checksum = "sha256:0a1e01d7cce84215b188494df38cd806f816557d573fb07f7644cc34aedab1cd"
+url = "https://github.com/jdx/aube/releases/download/v1.18.2/aube-v1.18.2-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/jdx/aube/releases/assets/442314620"
+provenance = "github-attestations"
+
+[tools."github:jdx/aube"."platforms.linux-x64-musl-baseline"]
 checksum = "sha256:0a1e01d7cce84215b188494df38cd806f816557d573fb07f7644cc34aedab1cd"
 url = "https://github.com/jdx/aube/releases/download/v1.18.2/aube-v1.18.2-x86_64-unknown-linux-musl.tar.gz"
 url_api = "https://api.github.com/repos/jdx/aube/releases/assets/442314620"
@@ -83,6 +95,12 @@ url_api = "https://api.github.com/repos/jdx/aube/releases/assets/442350963"
 provenance = "github-attestations"
 
 [tools."github:jdx/aube"."platforms.windows-x64"]
+checksum = "sha256:e0f13610dfded343b74f3babe53893c57e960cfb95d5b09977f3b0a0dbcb4c5b"
+url = "https://github.com/jdx/aube/releases/download/v1.18.2/aube-v1.18.2-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/jdx/aube/releases/assets/442313811"
+provenance = "github-attestations"
+
+[tools."github:jdx/aube"."platforms.windows-x64-baseline"]
 checksum = "sha256:e0f13610dfded343b74f3babe53893c57e960cfb95d5b09977f3b0a0dbcb4c5b"
 url = "https://github.com/jdx/aube/releases/download/v1.18.2/aube-v1.18.2-x86_64-pc-windows-msvc.zip"
 url_api = "https://api.github.com/repos/jdx/aube/releases/assets/442313811"
@@ -104,7 +122,15 @@ url = "https://github.com/jdx/hk/releases/download/v1.46.0/hk-aarch64-unknown-li
 checksum = "sha256:85b2cc167443cd27b49e323ef9b9d1a946d4bc18196eccb66112842d30fb90cb"
 url = "https://github.com/jdx/hk/releases/download/v1.46.0/hk-x86_64-unknown-linux-gnu.tar.gz"
 
+[tools.hk."platforms.linux-x64-baseline"]
+checksum = "sha256:85b2cc167443cd27b49e323ef9b9d1a946d4bc18196eccb66112842d30fb90cb"
+url = "https://github.com/jdx/hk/releases/download/v1.46.0/hk-x86_64-unknown-linux-gnu.tar.gz"
+
 [tools.hk."platforms.linux-x64-musl"]
+checksum = "sha256:4ff45e1bfc9672b1b00572b4a50fac3b57e4add622ed56e9e2587745299932eb"
+url = "https://github.com/jdx/hk/releases/download/v1.46.0/hk-x86_64-unknown-linux-musl.tar.gz"
+
+[tools.hk."platforms.linux-x64-musl-baseline"]
 checksum = "sha256:4ff45e1bfc9672b1b00572b4a50fac3b57e4add622ed56e9e2587745299932eb"
 url = "https://github.com/jdx/hk/releases/download/v1.46.0/hk-x86_64-unknown-linux-musl.tar.gz"
 
@@ -113,6 +139,10 @@ checksum = "sha256:9db3fac25754cfb929dc3f92b294fffdb966d4e838b8e0adeaf5b9b7eccc4
 url = "https://github.com/jdx/hk/releases/download/v1.46.0/hk-aarch64-apple-darwin.tar.gz"
 
 [tools.hk."platforms.windows-x64"]
+checksum = "sha256:5af7e769acb7f70d8630ed53ae1fb2cc4b205117f29df5d83619fa0ff72a3bf1"
+url = "https://github.com/jdx/hk/releases/download/v1.46.0/hk-x86_64-pc-windows-msvc.zip"
+
+[tools.hk."platforms.windows-x64-baseline"]
 checksum = "sha256:5af7e769acb7f70d8630ed53ae1fb2cc4b205117f29df5d83619fa0ff72a3bf1"
 url = "https://github.com/jdx/hk/releases/download/v1.46.0/hk-x86_64-pc-windows-msvc.zip"
 
@@ -132,7 +162,15 @@ url = "https://github.com/apple/pkl/releases/download/0.31.1/pkl-linux-aarch64"
 checksum = "sha256:618f13955d755cafbfe8c9cba1d27635848cd49dbc6abffd398d2751db1231bf"
 url = "https://github.com/apple/pkl/releases/download/0.31.1/pkl-linux-amd64"
 
+[tools.pkl."platforms.linux-x64-baseline"]
+checksum = "sha256:618f13955d755cafbfe8c9cba1d27635848cd49dbc6abffd398d2751db1231bf"
+url = "https://github.com/apple/pkl/releases/download/0.31.1/pkl-linux-amd64"
+
 [tools.pkl."platforms.linux-x64-musl"]
+checksum = "sha256:618f13955d755cafbfe8c9cba1d27635848cd49dbc6abffd398d2751db1231bf"
+url = "https://github.com/apple/pkl/releases/download/0.31.1/pkl-linux-amd64"
+
+[tools.pkl."platforms.linux-x64-musl-baseline"]
 checksum = "sha256:618f13955d755cafbfe8c9cba1d27635848cd49dbc6abffd398d2751db1231bf"
 url = "https://github.com/apple/pkl/releases/download/0.31.1/pkl-linux-amd64"
 
@@ -144,6 +182,14 @@ url = "https://github.com/apple/pkl/releases/download/0.31.1/pkl-macos-aarch64"
 checksum = "sha256:22123ed4ae4c03afa8c54c69f77f0bec39b0fa0f67b09d6d148e0a376a2a471d"
 url = "https://github.com/apple/pkl/releases/download/0.31.1/pkl-macos-amd64"
 
+[tools.pkl."platforms.macos-x64-baseline"]
+checksum = "sha256:22123ed4ae4c03afa8c54c69f77f0bec39b0fa0f67b09d6d148e0a376a2a471d"
+url = "https://github.com/apple/pkl/releases/download/0.31.1/pkl-macos-amd64"
+
 [tools.pkl."platforms.windows-x64"]
+checksum = "sha256:a8834481667325b44c539dbb758d7365a16389070f343c04b639bbe525ede013"
+url = "https://github.com/apple/pkl/releases/download/0.31.1/pkl-windows-amd64.exe"
+
+[tools.pkl."platforms.windows-x64-baseline"]
 checksum = "sha256:a8834481667325b44c539dbb758d7365a16389070f343c04b639bbe525ede013"
 url = "https://github.com/apple/pkl/releases/download/0.31.1/pkl-windows-amd64.exe"
