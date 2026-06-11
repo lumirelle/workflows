@@ -57,6 +57,7 @@ jobs:
           debug: ${{ inputs.debug }}
 
       - name: Setup Runtime
+        shell: bash
         run: |
           set -e
           mkdir -p ~/.config/mise
