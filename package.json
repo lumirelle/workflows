@@ -1,7 +1,7 @@
 {
   "name": "workflows",
   "type": "module",
-  "version": "8.0.0",
+  "version": "8.0.1",
   "private": true,
   "packageManager": "aube@1.17.1",
   "devDependencies": {
