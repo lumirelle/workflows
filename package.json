@@ -3,7 +3,7 @@
   "type": "module",
   "version": "9.0.0",
   "private": true,
-  "packageManager": "aube@1.17.1",
+  "packageManager": "aube@1.19.0",
   "devDependencies": {
     "@antfu/eslint-config": "^9.0.0",
     "@lumirelle/oxlint-config": "^0.8.2",
