@@ -2,40 +2,53 @@ amends "package://github.com/jdx/hk/releases/download/v1.46.0/hk@1.46.0#/Config.
 import "package://github.com/jdx/hk/releases/download/v1.46.0/hk@1.46.0#/Builtins.pkl"
 
 local linters = new Mapping<String, Step> {
-    ["oxlint"] = (Builtins.ox_lint) {
-      glob = List("**/*")
-      check = "oxlint --no-error-on-unmatched-pattern --deny-warnings {{ files }}"
-      fix = "oxlint --no-error-on-unmatched-pattern --deny-warnings --fix {{ files }}"
-    }
-    ["eslint"] = (Builtins.eslint) {
-      batch = false
-      glob = List("**/*")
-      check = "eslint --no-warn-ignored {{ files }}"
-      fix = "eslint --no-warn-ignored --fix {{ files }}"
-      depends = List("oxlint")
-    }
+  // JS & TS & ...
+  ["oxlint"] = (Builtins.ox_lint) {
+    glob = List("**/*")
+    check = "oxlint --no-error-on-unmatched-pattern --deny-warnings {{ files }}"
+    fix = "oxlint --no-error-on-unmatched-pattern --deny-warnings --fix {{ files }}"
+  }
+  ["eslint"] = (Builtins.eslint) {
+    batch = false
+    glob = List("**/*")
+    check = "eslint --no-warn-ignored {{ files }}"
+    fix = "eslint --no-warn-ignored --fix {{ files }}"
+    depends = List("oxlint")
+  }
+  ["tsc"] {
+    glob = List("**/*")
+    check = "echo 'Type check successful!'"
+  }
 
-    ["tsc"] {
-      glob = List("**/*")
-      check = "echo 'Type check successful!'"
-    }
-    ["knip"] {
-      check = "echo 'Unused check successful!'"
-      fix = "echo 'Unused check successful!'"
-    }
+  // Configurations
+  ["pkl"] = (Builtins.pkl) {
+    glob = List("**/*.pkl")
+    check = "pkl eval {{files}}"
+  }
+  ["pkl-format"] {
+    glob = List("**/*.pkl")
+    check = "pkl format --diff-name-only {{ files }}"
+    fix = "pkl format --write {{ files }}"
+  }
+
+  // Unused
+  ["knip"] {
+    check = "echo 'Unused check successful!'"
+    fix = "echo 'Unused check successful!'"
+  }
 }
 
 hooks {
-    ["pre-commit"] {
-        fix = true
-        stash = "git"
-        steps = linters
-    }
-    ["fix"] {
-        fix = true
-        steps = linters
-    }
-    ["check"] {
-        steps = linters
-    }
+  ["pre-commit"] {
+    fix = true
+    stash = "git"
+    steps = linters
+  }
+  ["fix"] {
+    fix = true
+    steps = linters
+  }
+  ["check"] {
+    steps = linters
+  }
 }
