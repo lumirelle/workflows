@@ -1,3 +1,4 @@
+-- ESLint as formatter
 local eslint_support_filetypes = {
   "javascript",
   "javascriptreact",
@@ -44,7 +45,7 @@ local eslint_support_file_patterns = {
   "*.sass",
   "*.less",
 }
-
+-- Disable other formatter conflict with ESLint
 require("snacks").util.lsp.on(function(_, client)
   if vim.tbl_contains(eslint_support_filetypes, vim.bo.filetype) then
     client.server_capabilities.documentFormattingProvider = false
@@ -60,7 +61,6 @@ require("lspconfig").yamlls.setup({
     },
   },
 })
-
 return {
   {
     "neovim/nvim-lspconfig",
