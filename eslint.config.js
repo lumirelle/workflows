@@ -4,7 +4,10 @@ import oxlint from 'eslint-plugin-oxlint'
 
 export default antfu(
   {
+    // Strict lib type
     type: 'lib',
+
+    // Overrides
     perfectionist: {
       overrides: {
         'perfectionist/sort-imports': [
