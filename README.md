@@ -10,5 +10,5 @@ A collection of reusable GitHub Actions workflows.
 
 ## Release
 
-- [release.yaml](./.github/workflows/release.yaml): A workflow for releasing a new version, runs `mise run changelong` && `mise run publish` by default;
+- [release.yaml](./.github/workflows/release.yaml): A workflow for releasing a new version, runs `mise run changelog` && `mise run publish` by default;
 - [release-commit.yaml](./.github/workflows/release-commit.yaml): A workflow for generating a release commit, runs `mise run publish:commit`;
