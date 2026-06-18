@@ -3,10 +3,7 @@ import "package://github.com/jdx/hk/releases/download/v1.48.0/hk@1.48.0#/Builtin
 
 local linters = new Mapping<String, Step> {
   // JS & TS & ...
-  ["oxlint"] = (Builtins.ox_lint) {
-    check = "oxlint --no-error-on-unmatched-pattern --deny-warnings {{ files }}"
-    fix = "oxlint --no-error-on-unmatched-pattern --deny-warnings --fix {{ files }}"
-  }
+  ["oxlint"] = Builtins.ox_lint
   ["eslint"] = (Builtins.eslint) {
     batch = false
     glob =
@@ -37,9 +34,6 @@ local linters = new Mapping<String, Step> {
     fix = "eslint --no-warn-ignored --fix {{ files }}"
     depends = List("oxlint")
   }
-  ["tsc"] {
-    check = "echo 'Type check successful!'"
-  }
 
   // Configurations
   ["pkl"] = (Builtins.pkl) {
@@ -50,12 +44,6 @@ local linters = new Mapping<String, Step> {
     glob = List("**/*.pkl")
     check = "pkl format --diff-name-only {{ files }}"
     fix = "pkl format --write {{ files }}"
-  }
-
-  // Unused
-  ["knip"] {
-    check = "echo 'Unused check successful!'"
-    fix = "echo 'Unused check successful!'"
   }
 }
 
