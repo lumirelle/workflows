@@ -30,8 +30,6 @@ local linters = new Mapping<String, Step> {
         // TOML
         "*.toml",
       )
-    check = "eslint --no-warn-ignored {{ files }}"
-    fix = "eslint --no-warn-ignored --fix {{ files }}"
     depends = List("oxlint")
   }
 
