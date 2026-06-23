@@ -10,9 +10,10 @@ local linters = new Mapping<String, Step> {
     glob = List("**/*.pkl")
     check = "pkl eval {{files}}"
   }
-  ["pkl-format"] {
+  ["pkl-format"] = (Builtins.pkl_format) {
     glob = List("**/*.pkl")
-    check = "pkl format --diff-name-only {{ files }}"
+    shell = null
+    check_list_files = "pkl format --diff-name-only {{ files }}"
     fix = "pkl format --write {{ files }}"
   }
 
