@@ -1,5 +1,5 @@
 [env]
-_.path = ["./node_modules/.bin"]
+_.path = ["{{config_root}}/node_modules/.bin"]
 
 [tools]
 # Environments
@@ -9,7 +9,6 @@ aube = "1.26.0"
 hk = "1.50.0"
 pkl = "0.32.0"
 stylua = "2.5.2"
-node = "24"
 
 [deps.bun-aube]
 description = "Automatically install dependencies via aube & bun's lockfile."
@@ -37,12 +36,12 @@ run = { tasks = ["check", "test"] }
 
 [tasks.release]
 depends = "prerelease"
-run = "bumpp"
+run = "bun run bumpp"
 raw = true
 depends_post = "postrelease"
 
 [tasks.changelog]
-run = "changelogithub"
+run = "bun run changelogithub"
 
 [tasks.postrelease]
 run = "bun run ./release.sh"
