@@ -16,13 +16,13 @@ on:
       publish:
         required: false
         type: string
-        default: 'mise run publish:commit'
+        default: mise run publish-commit
 
 jobs:
   release-commit:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Mise
+      - name: Setup mise
         id: setup-mise
         uses: lumirelle/workflows/setup-mise@v9
         with:

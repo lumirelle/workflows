@@ -24,7 +24,7 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - name: Setup Mise
+      - name: Setup mise
         uses: lumirelle/workflows/setup-mise@v9
         with:
           debug: ${{ inputs.debug }}

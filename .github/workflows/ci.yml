@@ -16,7 +16,7 @@ on:
       runtime-versions:
         required: false
         type: string
-        default: '"bun = \\\"latest\\\""'
+        default: '"node@22", "node@24", "node@26"'
 
       check:
         required: false
@@ -37,7 +37,7 @@ jobs:
   check:
     runs-on: ${{ inputs.primary-os }}
     steps:
-      - name: Setup Mise
+      - name: Setup mise
         uses: lumirelle/workflows/setup-mise@v9
 
       - name: Check
@@ -51,18 +51,23 @@ jobs:
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Setup Mise
+      - name: Setup mise
         uses: lumirelle/workflows/setup-mise@v9
         with:
           debug: ${{ inputs.debug }}
 
-      - name: Setup Runtime
+      - name: Convert runtime version
+        id: runtime
+        run: |
+          echo "version=$(echo '${{ matrix.runtime }}' | sed -E 's/"([a-z]+)@([^"]+)"/\1 = \\"\2\\"/')" >> "$GITHUB_OUTPUT"
+
+      - name: Setup ${{ matrix.runtime }} via global mise config
         shell: bash
         run: |
           set -e
           mkdir -p ~/.config/mise
           echo "[tools]
-            ${{ matrix.runtime }}
+            ${{ steps.runtime.outputs.mise_version }}"
           " > ~/.config/mise/config.toml
 
           if [[ ${{ inputs.debug }} == 'true' ]]; then

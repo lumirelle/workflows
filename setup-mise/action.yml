@@ -22,23 +22,19 @@ runs:
   using: composite
   steps:
     - name: Checkout
-      uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       with:
         persist-credentials: ${{ inputs.persist-credentials }}
         fetch-depth: "${{ inputs.fetch-all == 'true' && '0' || '1' }}"
 
-    - name: Setup Mise
+    - name: Setup mise
       uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4.2.0
       with:
         version: ${{ inputs.mise-version }}
         log_level: ${{ inputs.debug == 'true' && 'debug' || 'info' }}
         experimental: true
 
-    - name: Mise Doctor
+    - name: Mise doctor
       if: ${{ inputs.debug }}
       shell: bash
-      run: |
-        set -e
-        which mise
-        mise --version
-        mise doctor
+      run: mise doctor
