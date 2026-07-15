@@ -18,10 +18,7 @@ local linters = new Mapping<String, Step> {
   }
 
   // Source code
-  ["oxlint"] = (Builtins.ox_lint) {
-    check = "bun run oxlint --deny-warnings {{ files }}"
-    fix = "bun run oxlint --deny-warnings --fix {{ files }}"
-  }
+  ["oxlint"] = Builtins.ox_lint
   ["eslint"] = (Builtins.eslint) {
     batch = false
     glob =
@@ -48,8 +45,6 @@ local linters = new Mapping<String, Step> {
         // TOML
         "*.toml",
       )
-    check = "bun run eslint {{ files }}"
-    fix = "bun run eslint --fix {{ files }}"
     depends = List("oxlint")
   }
 }
