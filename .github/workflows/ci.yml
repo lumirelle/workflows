@@ -59,7 +59,7 @@ jobs:
       - name: Convert runtime version
         id: runtime
         run: |
-          echo "version=$(echo '${{ matrix.runtime }}' | sed -E 's/"([a-z]+)@([^"]+)"/\1 = \\"\2\\"/')" >> "$GITHUB_OUTPUT"
+          echo "version=$(echo '${{ matrix.runtime }}' | sed -E 's/([a-z]+)@([^@]+)/\1 = \\"\2\\"/')" >> "$GITHUB_OUTPUT"
 
       - name: Setup ${{ matrix.runtime }} via global mise config
         shell: bash
