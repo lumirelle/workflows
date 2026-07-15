@@ -63,7 +63,7 @@ run = 'changelogithub'
 
 [tasks.postrelease]
 description = 'Sync version branch with main.'
-env = { VERSION_BRANCH = 'v9' }
+env = { VERSION_BRANCH = 'v10' }
 run = '''
 git update-ref refs/heads/$VERSION_BRANCH refs/heads/main
 git push origin $VERSION_BRANCH --force
