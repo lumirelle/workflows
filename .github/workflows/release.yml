@@ -32,7 +32,7 @@ jobs:
     steps:
       - name: Setup mise
         id: setup-mise
-        uses: lumirelle/workflows/setup-mise@v9
+        uses: lumirelle/workflows/setup-mise@v10
         with:
           fetch-all: true
           debug: ${{ inputs.debug }}
