@@ -73,6 +73,6 @@ git push origin $VERSION_BRANCH --force
 description = 'A mocked publish task.'
 run = 'echo "Published!"'
 
-[tasks.'publish:commit']
+[tasks.publish-commit]
 description = 'A mocked publish commit task.'
 run = 'echo "Commit published!"'
