@@ -1,6 +1,6 @@
-amends "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Config.pkl"
+amends "package://github.com/jdx/hk/releases/download/v1.51.0/hk@1.51.0#/Config.pkl"
 
-import "package://github.com/jdx/hk/releases/download/v1.50.0/hk@1.50.0#/Builtins.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.51.0/hk@1.51.0#/Builtins.pkl"
 
 local linters = new Mapping<String, Step> {
   // Code
@@ -36,14 +36,20 @@ local linters = new Mapping<String, Step> {
   ["stylua"] = (Builtins.stylua) {
     glob = List("**/*.lua")
   }
-  ["hk"] = (Builtins.pkl) {
+  ["hk"] {
     glob = List("hk.pkl")
-    check = "hk validate"
+    check = new Config.Command {
+      argv = List("hk", "validate")
+    }
   }
-  ["pkl-format"] = (Builtins.pkl_format) {
+  ["pkl-format"] {
     glob = List("hk.pkl")
-    shell = null
-    fix = "pkl format --write {{ files }}"
+    check_list_files = new Config.Command {
+      argv = List("pkl", "format", "--diff-name-only", "{{ files }}")
+    }
+    fix = new Config.Command {
+      argv = List("pkl", "format", "--write", "{{ files }}")
+    }
   }
 }
 
