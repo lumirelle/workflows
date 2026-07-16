@@ -19,7 +19,7 @@ on:
         default: false
 
 jobs:
-  autofix-bun:
+  autofix:
     runs-on: ${{ inputs.primary-os }}
     permissions:
       contents: read
