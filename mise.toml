@@ -43,7 +43,10 @@ depends = 'build'
 
 [tasks.test]
 description = 'A mocked test task.'
-run = 'echo "Tests passed!"'
+run = '''
+node --version
+echo "Tests runs on Node.js!"
+'''
 
 [tasks.prerelease]
 description = 'Prepare for release.'
