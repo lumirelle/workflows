@@ -4,6 +4,41 @@
 version = "0.4.12"
 backend = "github:nubjs/nub"
 
+[tools."github:nubjs/nub"."platforms.linux-arm64"]
+checksum = "sha256:1d1937be02cce28d7d53782893e5386e2bd4a4317bcf9278dcf9eed5a558f28c"
+url = "https://github.com/nubjs/nub/releases/download/v0.4.12/nub-linux-arm64.tar.gz"
+url_api = "https://api.github.com/repos/nubjs/nub/releases/assets/477369838"
+
+[tools."github:nubjs/nub"."platforms.linux-arm64-musl"]
+checksum = "sha256:33c9294a1db08cf55d56d146b1e3b1bd1d8f98f36e2d02808fe8a5b53a9f6f9d"
+url = "https://github.com/nubjs/nub/releases/download/v0.4.12/nub-linux-arm64-musl.tar.gz"
+url_api = "https://api.github.com/repos/nubjs/nub/releases/assets/477369835"
+
+[tools."github:nubjs/nub"."platforms.linux-x64"]
+checksum = "sha256:e770764a0106c97316565e64f6d8825064330657c159bfa9d9d8d39bb230a893"
+url = "https://github.com/nubjs/nub/releases/download/v0.4.12/nub-linux-x64.tar.gz"
+url_api = "https://api.github.com/repos/nubjs/nub/releases/assets/477369832"
+
+[tools."github:nubjs/nub"."platforms.linux-x64-musl"]
+checksum = "sha256:5d7729256349bcfb0f516d412d14018f860f9b130c26d495f1d2d2c85e55a4d8"
+url = "https://github.com/nubjs/nub/releases/download/v0.4.12/nub-linux-x64-musl.tar.gz"
+url_api = "https://api.github.com/repos/nubjs/nub/releases/assets/477369834"
+
+[tools."github:nubjs/nub"."platforms.macos-arm64"]
+checksum = "sha256:63bf148400ae7bdbf020a1cc31aa6538ac550fa3a891b6e09e2f3410aedb1c09"
+url = "https://github.com/nubjs/nub/releases/download/v0.4.12/nub-darwin-arm64.tar.gz"
+url_api = "https://api.github.com/repos/nubjs/nub/releases/assets/477369830"
+
+[tools."github:nubjs/nub"."platforms.macos-x64"]
+checksum = "sha256:e169e94bed9aeb0d3da9b1f61f2643dce39179e80493f64c751dff8b868d32b1"
+url = "https://github.com/nubjs/nub/releases/download/v0.4.12/nub-darwin-x64.tar.gz"
+url_api = "https://api.github.com/repos/nubjs/nub/releases/assets/477369833"
+
+[tools."github:nubjs/nub"."platforms.windows-x64"]
+checksum = "sha256:020290d403a004466cd8de3a7ec569d74694b05c33e2ef7a2892b5269e4c3ffa"
+url = "https://github.com/nubjs/nub/releases/download/v0.4.12/nub-win32-x64.zip"
+url_api = "https://api.github.com/repos/nubjs/nub/releases/assets/477369837"
+
 [[tools.hk]]
 version = "1.51.0"
 backend = "aqua:jdx/hk"
