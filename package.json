@@ -3,7 +3,14 @@
   "type": "module",
   "version": "10.0.2",
   "private": true,
-  "packageManager": "nub@0.4.11",
+  "packageManager": "nub@0.4.12",
+  "devEngines": {
+    "packageManager": {
+      "name": "nub",
+      "version": "^0.4.12",
+      "onFail": "warn"
+    }
+  },
   "devDependencies": {
     "@antfu/eslint-config": "^9.1.0",
     "@lumirelle/oxlint-config": "^0.12.0",
@@ -14,12 +21,5 @@
     "oxlint": "^1.73.0",
     "oxlint-tsgolint": "^0.24.0",
     "taze": "^19.14.1"
-  },
-  "devEngines": {
-    "packageManager": {
-      "name": "nub",
-      "version": "^0.4.11",
-      "onFail": "warn"
-    }
   }
 }
