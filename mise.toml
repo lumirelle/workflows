@@ -25,9 +25,10 @@ run = 'echo "Build completed!"'
 description = 'Run all checks.'
 usage = '''
 flag "-s --staged" help="Run on staged files only without stashing unstaged changes"
+arg "[rest]" var=#true help="Additional arguments to pass to the test runner"
 '''
 run = '''
-hk check {{ "--staged" if usage.staged else "--all" }}
+hk check {{ "--staged" if usage.staged else "--all" }} {{ usage.rest | join(sep=' ') if usage.rest else '' }}
 '''
 depends = 'build'
 
@@ -35,9 +36,10 @@ depends = 'build'
 description = 'Fix all check issues.'
 usage = '''
 flag "-s --staged" help="Run on staged files only without stashing unstaged changes"
+arg "[rest]" var=#true help="Additional arguments to pass to the test runner"
 '''
 run = '''
-hk fix {{ "--staged" if usage.staged else "--all" }}
+hk fix {{ "--staged" if usage.staged else "--all" }} {{ usage.rest | join(sep=' ') if usage.rest else '' }}
 '''
 depends = 'build'
 
