@@ -11,14 +11,11 @@ stylua = 'latest'
 description = 'Automatically install Node.js dependencies via nub.'
 sources = ['package.json', 'nub.lock']
 outputs = ['node_modules/']
-run = 'nub install'
+run = 'nub pm pin && nub install'
 auto = true
 
 [env]
 _.path = ['{{config_root}}/node_modules/.bin']
-
-[hooks.enter]
-run = 'nub pm pin'
 
 [tasks.build]
 description = 'A mocked build task.'
