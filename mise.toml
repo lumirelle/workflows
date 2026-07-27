@@ -1,7 +1,7 @@
 [tools]
 # Environments
 node = 'latest'
-'github:nubjs/nub' = { version = 'latest', postinstall = 'nub pm pin' }
+'github:nubjs/nub' = 'latest'
 # Quality
 hk = 'latest'
 pkl = 'latest'
@@ -16,6 +16,9 @@ auto = true
 
 [env]
 _.path = ['{{config_root}}/node_modules/.bin']
+
+[hooks.enter]
+run = 'nub pm pin'
 
 [tasks.build]
 description = 'A mocked build task.'
