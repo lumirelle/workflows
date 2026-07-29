@@ -17,6 +17,9 @@ auto = true
 [env]
 _.path = ['{{config_root}}/node_modules/.bin']
 
+[task_config.input_groups]
+hk = ["*.js", "*.mjs", "*.cjs", "*.jsx", "*.ts", "*.mts", "*.cts", "*.tsx", "*.json", "*.jsonc", "*.yaml", "*.yml", "*.toml", "*.md", "*.mdc", "*.mdx", "*.lua", "hk.pkl"]
+
 [tasks.build]
 description = 'A mocked build task.'
 run = 'echo "Build completed!"'
@@ -30,7 +33,10 @@ arg "[rest]" var=#true help="Additional arguments to pass to the test runner"
 run = '''
 hk check {{ "--staged" if usage.staged else "--all" }} {{ usage.rest | join(sep=' ') if usage.rest else '' }}
 '''
+sources = ["@group:hk"]
+outputs = []
 depends = 'build'
+cache = { enabled = true, command_inputs = ["hk --version"] }
 
 [tasks.fix]
 description = 'Fix all check issues.'
@@ -41,7 +47,10 @@ arg "[rest]" var=#true help="Additional arguments to pass to the test runner"
 run = '''
 hk fix {{ "--staged" if usage.staged else "--all" }} {{ usage.rest | join(sep=' ') if usage.rest else '' }}
 '''
+sources = ["@group:hk"]
+outputs = []
 depends = 'build'
+cache = { enabled = true, command_inputs = ["hk --version"] }
 
 [tasks.test]
 description = 'A mocked test task.'

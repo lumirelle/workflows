@@ -29,6 +29,12 @@ local linters = new Mapping<String, Step> {
         "*.mdc",
         "*.mdx",
       )
+    check = new Config.Command {
+      argv = List("eslint", "--no-warn-ignored", "{{files}}")
+    }
+    fix = new Config.Command {
+      argv = List("eslint", "--no-warn-ignored", "--fix", "{{files}}")
+    }
     depends = List("oxlint")
   }
 
