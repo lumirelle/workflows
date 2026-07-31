@@ -53,14 +53,14 @@ runs:
 
     - name: Cache Nub
       if: inputs.cache-preset == 'nub'
-      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ inputs.cache-path != '' && inputs.cache-path || '~/.local/share/nub/store/v1' }}
         key: ${{ inputs.cache-key != '' && inputs.cache-key || format('nub-{0}-{1}', runner.os, hashFiles('nub.lock')) }}
 
     - name: Cache
       if: inputs.cache-preset == '' && inputs.cache-path != ''
-      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ inputs.cache-path }}
         key: ${{ inputs.cache-key != '' && inputs.cache-key || runner.os }}
