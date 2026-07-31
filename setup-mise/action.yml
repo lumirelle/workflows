@@ -47,23 +47,20 @@ runs:
         fetch-depth: "${{ inputs.fetch-all == 'true' && '0' || '1' }}"
 
     - name: Setup mise
-      uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4.2.0
+      uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4.2.3
+      env:
+        MISE_CACHE_DIR: ~/.cache/mise/
       with:
         version: ${{ inputs.mise-version }}
         log_level: ${{ inputs.debug == 'true' && 'debug' || 'info' }}
         experimental: true
         cache: true
 
-    - name: Setup mise task cache dir
-      if: contains(inputs.cache-preset, 'mise-task')
-      shell: bash
-      run: echo "MISE_TASK_CACHE_DIR=~/.cache/mise-task" >> "$GITHUB_ENV"
-
-    - name: Cache mise task
+    - name: Cache mise task artifacts
       if: contains(inputs.cache-preset, 'mise-task')
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
-        path: ~/.cache/mise-task/v2
+        path: ~/.cache/mise/task-artifacts
         key: ${{ format('mise-task-{0}', runner.os) }}
 
     - name: Cache nub
