@@ -19,19 +19,22 @@ inputs:
     default: 'false'
 
   cache-preset:
-    description: Named cache preset to enable (e.g. 'nub'). Explicit cache-* inputs override per-field.
+    description: |-
+      Named cache preset(s) to enable. Comma-separated for multiple (e.g. 'nub', 'hk', 'nub,hk').
+      Each preset runs as an independent cache step with its own key and path.
+      Available presets: 'nub', 'hk'.
     default: ''
 
   cache-path:
-    description: Path to cache via actions/cache. Overrides the preset's path.
+    description: Path to cache via actions/cache. Enables a custom cache step alongside any preset.
     default: ''
 
   cache-key:
-    description: Cache key for actions/cache. Overrides the preset's key.
+    description: Cache key for the custom cache step. Defaults to runner.os.
     default: ''
 
   cache-restore-keys:
-    description: Restore-keys for actions/cache. Overrides the preset's restore-keys.
+    description: Restore-keys for the custom cache step. Optional.
     default: ''
 
 runs:
@@ -52,18 +55,26 @@ runs:
         cache: true
 
     - name: Cache Nub
-      if: inputs.cache-preset == 'nub'
+      if: contains(inputs.cache-preset, 'nub')
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
-        path: ${{ inputs.cache-path != '' && inputs.cache-path || '~/.local/share/nub/store/v1' }}
-        key: ${{ inputs.cache-key != '' && inputs.cache-key || format('nub-{0}-{1}', runner.os, hashFiles('nub.lock')) }}
+        path: ~/.local/share/nub/store/v1
+        key: ${{ format('nub-{0}-{1}', runner.os, hashFiles('nub.lock')) }}
 
-    - name: Cache
-      if: inputs.cache-preset == '' && inputs.cache-path != ''
+    - name: Cache Hk
+      if: contains(inputs.cache-preset, 'hk')
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/.cache/hk
+        key: ${{ format('hk-{0}-{1}', runner.os, hashFiles('hk.pkl')) }}
+
+    - name: Cache Custom
+      if: inputs.cache-path != ''
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ inputs.cache-path }}
-        key: ${{ inputs.cache-key != '' && inputs.cache-key || runner.os }}
+        key: custom-${{ inputs.cache-key != '' && inputs.cache-key || runner.os }}
+        restore-keys: ${{ inputs.cache-restore-keys }}
 
     - name: Mise doctor
       if: ${{ inputs.debug }}

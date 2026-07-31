@@ -13,5 +13,5 @@ jobs:
     permissions:
       contents: read
     with:
-      cache-preset: nub
+      cache-preset: 'nub,hk'
       debug: true
