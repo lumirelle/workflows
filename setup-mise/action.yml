@@ -22,7 +22,7 @@ inputs:
     description: |-
       Named cache preset(s) to enable. Comma-separated for multiple (e.g. 'nub', 'hk', 'nub,hk').
       Each preset runs as an independent cache step with its own key and path.
-      Available presets: 'nub', 'hk', 'mise-task'.
+      Available presets: 'mise-deps', 'mise-task', 'nub', 'hk'.
     default: ''
 
   cache-path:
@@ -56,11 +56,21 @@ runs:
         experimental: true
         cache: true
 
+    - name: Cache mise deps
+      if: contains(inputs.cache-preset, 'mise-deps')
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/.local/state/mise/deps
+        key: ${{ format('mise-deps-{0}', runner.os) }}
+
     - name: Cache mise task artifacts
       if: contains(inputs.cache-preset, 'mise-task')
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
-        path: ~/.cache/mise/task-artifacts
+        path: |
+          ~/.cache/mise/task-artifacts
+          ~/.local/state/mise/task-artifacts
+          ~/.local/state/mise/task-sources
         key: ${{ format('mise-task-{0}', runner.os) }}
 
     - name: Cache nub

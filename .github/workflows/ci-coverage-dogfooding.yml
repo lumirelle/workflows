@@ -14,5 +14,5 @@ jobs:
     permissions:
       id-token: write
     with:
-      cache-preset: 'mise-task,nub,hk'
+      cache-preset: 'mise-deps,mise-task,nub,hk'
       debug: true

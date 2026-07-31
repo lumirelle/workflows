@@ -14,9 +14,10 @@ Cache support is powered by [`actions/cache`](https://github.com/actions/cache).
 
 There are some cache presets supported via the `cache-preset` input:
 
-- `mise-task` — caches mise task artifacts (`~/.cache/mise-task/v2`), keyed by OS. Requires `cache = { enabled = true }` in your `mise.toml` tasks.
-- `nub` — caches `~/.local/share/nub/store/v1`, keyed by `nub.lock`
-- `hk` — caches `~/.cache/hk`, keyed by `hk.pkl`
+- `mise-deps` — caches [mise deps state](https://mise.jdx.dev/dev-tools/deps.html#freshness-checking) (`~/.local/state/mise/deps`), keyed by OS.
+- `mise-task` — caches mise task artifacts & state (`~/.cache/mise/task-artifacts`, `~/.local/state/mise/task-artifacts`, `~/.local/state/mise/task-sources`), keyed by OS. Requires `cache = { enabled = true }` in your `mise.toml` tasks.
+- `nub` — caches [nub virtual store](https://nubjs.com/docs/install/virtual-store#one-symlink-per-package) (`~/.local/share/nub/store/v1`), keyed by `nub.lock`
+- `hk` — caches [hk cache dir](https://hk.jdx.dev/gen/settings-config.html#cache-dir) (`~/.cache/hk`), keyed by `hk.pkl`
 
 You can pass a single preset or comma-separated multiple:
 
