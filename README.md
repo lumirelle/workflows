@@ -14,6 +14,7 @@ Cache support is powered by [`actions/cache`](https://github.com/actions/cache).
 
 There are some cache presets supported via the `cache-preset` input:
 
+- `mise-task` — caches mise task artifacts (`~/.cache/mise-task/v2`), keyed by OS. Requires `cache = { enabled = true }` in your `mise.toml` tasks.
 - `nub` — caches `~/.local/share/nub/store/v1`, keyed by `nub.lock`
 - `hk` — caches `~/.cache/hk`, keyed by `hk.pkl`
 
@@ -22,7 +23,7 @@ You can pass a single preset or comma-separated multiple:
 ```yaml
 - uses: lumirelle/workflows/setup-mise@main
   with:
-    cache-preset: 'nub,hk'
+    cache-preset: 'mise-task,nub,hk'
 ```
 
 Each preset runs as an independent cache step with its own key and path.

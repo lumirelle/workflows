@@ -8,5 +8,5 @@ jobs:
   release-commit:
     uses: lumirelle/workflows/.github/workflows/release-commit.yml@main
     with:
-      cache-preset: 'nub,hk'
+      cache-preset: 'mise-task,nub,hk'
       debug: true
