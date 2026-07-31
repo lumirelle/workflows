@@ -8,6 +8,11 @@ on:
         type: string
         default: ubuntu-slim
 
+      cache-preset:
+        required: false
+        type: string
+        default: ''
+
       fix:
         required: false
         type: string
@@ -27,6 +32,7 @@ jobs:
       - name: Setup mise
         uses: lumirelle/workflows/setup-mise@v10
         with:
+          cache-preset: ${{ inputs.cache-preset }}
           debug: ${{ inputs.debug }}
 
       - name: Fix

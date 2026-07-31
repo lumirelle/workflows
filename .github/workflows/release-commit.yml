@@ -3,6 +3,16 @@ name: Release Commit
 on:
   workflow_call:
     inputs:
+      primary-os:
+        required: false
+        type: string
+        default: ubuntu-latest
+
+      cache-preset:
+        required: false
+        type: string
+        default: ''
+
       debug:
         required: false
         type: boolean
@@ -20,12 +30,13 @@ on:
 
 jobs:
   release-commit:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.primary-os }}
     steps:
       - name: Setup mise
         id: setup-mise
         uses: lumirelle/workflows/setup-mise@v10
         with:
+          cache-preset: ${{ inputs.cache-preset }}
           debug: ${{ inputs.debug }}
 
       - name: Build

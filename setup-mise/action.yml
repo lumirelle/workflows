@@ -18,6 +18,22 @@ inputs:
     description: Whether to enable debug logging.
     default: 'false'
 
+  cache-preset:
+    description: Named cache preset to enable (e.g. 'nub'). Explicit cache-* inputs override per-field.
+    default: ''
+
+  cache-path:
+    description: Path to cache via actions/cache. Overrides the preset's path.
+    default: ''
+
+  cache-key:
+    description: Cache key for actions/cache. Overrides the preset's key.
+    default: ''
+
+  cache-restore-keys:
+    description: Restore-keys for actions/cache. Overrides the preset's restore-keys.
+    default: ''
+
 runs:
   using: composite
   steps:
@@ -33,6 +49,21 @@ runs:
         version: ${{ inputs.mise-version }}
         log_level: ${{ inputs.debug == 'true' && 'debug' || 'info' }}
         experimental: true
+        cache: true
+
+    - name: Cache Nub
+      if: inputs.cache-preset == 'nub'
+      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+      with:
+        path: ${{ inputs.cache-path != '' && inputs.cache-path || '~/.local/share/nub/store/v1' }}
+        key: ${{ inputs.cache-key != '' && inputs.cache-key || format('nub-{0}-{1}', runner.os, hashFiles('nub.lock')) }}
+
+    - name: Cache
+      if: inputs.cache-preset == '' && inputs.cache-path != ''
+      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+      with:
+        path: ${{ inputs.cache-path }}
+        key: ${{ inputs.cache-key != '' && inputs.cache-key || runner.os }}
 
     - name: Mise doctor
       if: ${{ inputs.debug }}

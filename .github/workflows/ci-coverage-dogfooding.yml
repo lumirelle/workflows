@@ -14,4 +14,5 @@ jobs:
     permissions:
       id-token: write
     with:
+      cache-preset: nub
       debug: true

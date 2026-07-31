@@ -3,6 +3,16 @@ name: Release
 on:
   workflow_call:
     inputs:
+      primary-os:
+        required: false
+        type: string
+        default: ubuntu-latest
+
+      cache-preset:
+        required: false
+        type: string
+        default: ''
+
       debug:
         required: false
         type: boolean
@@ -25,7 +35,7 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.primary-os }}
     permissions:
       id-token: write
       contents: write
@@ -35,6 +45,7 @@ jobs:
         uses: lumirelle/workflows/setup-mise@v10
         with:
           fetch-all: true
+          cache-preset: ${{ inputs.cache-preset }}
           debug: ${{ inputs.debug }}
 
       - name: Generate changelog
