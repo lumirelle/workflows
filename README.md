@@ -17,12 +17,15 @@ There are some cache presets supported via the `cache-preset` input:
 - `mise-task` — Caches mise task artifacts & state (`~/.cache/mise/task-artifacts`, `~/.local/state/mise/task-artifacts`, `~/.local/state/mise/task-sources`), keyed by OS. Requires `cache = { enabled = true }` in your `mise.toml` tasks.
 - `nub` — Caches [nub virtual store](https://nubjs.com/docs/install/virtual-store#one-symlink-per-package) (`~/.local/share/nub/store/v1`), keyed by `nub.lock`
 
-You can pass a single preset or comma-separated multiple:
+You can pass a single preset or comma-separated multiple, and override preset via JSON configurations:
 
 ```yaml
 - uses: lumirelle/workflows/setup-mise@main
   with:
-    cache-preset: 'mise-task,nub,hk'
+    cache-preset: 'mise-task,nub'
+    cache-preset-path: '{"mise-task":["/path/a","/path/b"],"nub":"/custom/nub"}'
+    cache-preset-key: '{"nub":["nub-Linux-","nub-"]}'
+    cache-preset-restore-keys: '{"mise-task":"mise-task-","nub":"nub-"}'
 ```
 
 Each preset runs as an independent cache step with its own key and path.
@@ -32,8 +35,8 @@ For a custom cache, set `cache-path` (and optionally `cache-key` / `cache-restor
 ```yaml
 - uses: lumirelle/workflows/setup-mise@v10
   with:
-    # nub & hk still works
-    cache-preset: 'nub,hk'
+    # mise-task & nub still works
+    cache-preset: 'mise-task,nub'
     # Your custom cache rules
     cache-path: ./.cache
     cache-key: 'custom-${{ runner.os }}'

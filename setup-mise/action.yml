@@ -22,7 +22,31 @@ inputs:
     description: |-
       Named cache preset(s) to enable. Comma-separated for multiple (e.g. 'nub', 'hk', 'nub,hk').
       Each preset runs as an independent cache step with its own key and path.
-      Available presets: 'mise-deps', 'mise-task', 'nub', 'hk'.
+      Available presets: 'mise-task', 'nub'.
+      Deprecated presets: 'mise-deps', 'hk'.
+    default: ''
+
+  cache-preset-path:
+    description: |-
+      JSON map to override cache paths per preset.
+      Values can be a string or an array of strings for multiple paths.
+      Example: '{"mise-task":["/path/a","/path/b"],"nub":"/custom/nub"}'.
+      Keys must match enabled presets. Omitted keys use defaults.
+    default: ''
+
+  cache-preset-key:
+    description: |-
+      JSON map to override cache keys per preset.
+      Example: '{"mise-task":"mise-task-custom-key","nub":"nub-custom-key"}'.
+      Keys must match enabled presets. Omitted keys use defaults.
+    default: ''
+
+  cache-preset-restore-keys:
+    description: |-
+      JSON map to override restore-keys per preset.
+      Values can be a string or an array of strings for multiple keys.
+      Example: '{"nub":["nub-Linux-","nub-"]}'.
+      Keys must match enabled presets. Omitted keys have no restore-keys.
     default: ''
 
   cache-path:
@@ -56,36 +80,37 @@ runs:
         experimental: true
         cache: true
 
-    - name: Cache mise deps (deprecated)
+    - name: Cache mise deps (deprecated, remove in next major version)
       if: contains(inputs.cache-preset, 'mise-deps')
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
-        path: ~/.local/state/mise/deps
-        key: ${{ format('mise-deps-{0}', runner.os, hashFiles('mise.toml') }}
+        path: ${{ inputs.cache-preset-path != '' && join(fromJSON(inputs.cache-preset-path).mise-deps, '\n') || '~/.local/state/mise/deps' }}
+        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-deps || format('mise-deps-{0}-{1}', runner.os, hashFiles('mise.toml')) }}
+        restore-keys: ${{ inputs.cache-preset-restore-keys != '' && join(fromJSON(inputs.cache-preset-restore-keys).mise-deps, '\n') || '' }}
 
     - name: Cache mise task artifacts
       if: contains(inputs.cache-preset, 'mise-task')
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
-        path: |
-          ~/.cache/mise/task-artifacts
-          ~/.local/state/mise/task-artifacts
-          ~/.local/state/mise/task-sources
-        key: ${{ format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml') }}
+        path: ${{ inputs.cache-preset-path != '' && join(fromJSON(inputs.cache-preset-path).mise-task, '\n') || format('{0}\n{1}\n{2}', '~/.cache/mise/task-artifacts', '~/.local/state/mise/task-artifacts', '~/.local/state/mise/task-sources') }}
+        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-task || format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml')) }}
+        restore-keys: ${{ inputs.cache-preset-restore-keys != '' && join(fromJSON(inputs.cache-preset-restore-keys).mise-task, '\n') || '' }}
 
     - name: Cache nub
       if: contains(inputs.cache-preset, 'nub')
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
-        path: ~/.local/share/nub/store/v1
-        key: ${{ format('nub-{0}-{1}', runner.os, hashFiles('nub.lock')) }}
+        path: ${{ inputs.cache-preset-path != '' && join(fromJSON(inputs.cache-preset-path).nub, '\n') || '~/.local/share/nub/store/v1' }}
+        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).nub || format('nub-{0}-{1}', runner.os, hashFiles('nub.lock')) }}
+        restore-keys: ${{ inputs.cache-preset-restore-keys != '' && join(fromJSON(inputs.cache-preset-restore-keys).nub, '\n') || '' }}
 
-    - name: Cache hk (deprecated)
+    - name: Cache hk (deprecated, remove in next major version)
       if: contains(inputs.cache-preset, 'hk')
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
-        path: ~/.cache/hk
-        key: ${{ format('hk-{0}-{1}', runner.os, hashFiles('hk.pkl')) }}
+        path: ${{ inputs.cache-preset-path != '' && join(fromJSON(inputs.cache-preset-path).hk, '\n') || '~/.cache/hk' }}
+        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).hk || format('hk-{0}-{1}', runner.os, hashFiles('hk.pkl')) }}
+        restore-keys: ${{ inputs.cache-preset-restore-keys != '' && join(fromJSON(inputs.cache-preset-restore-keys).hk, '\n') || '' }}
 
     - name: Cache (custom)
       if: inputs.cache-path != ''
