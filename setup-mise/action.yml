@@ -61,7 +61,7 @@ runs:
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ~/.local/state/mise/deps
-        key: ${{ format('mise-deps-{0}', runner.os) }}
+        key: ${{ format('mise-deps-{0}', runner.os, hashFiles('mise.toml') }}
 
     - name: Cache mise task artifacts
       if: contains(inputs.cache-preset, 'mise-task')
@@ -71,7 +71,7 @@ runs:
           ~/.cache/mise/task-artifacts
           ~/.local/state/mise/task-artifacts
           ~/.local/state/mise/task-sources
-        key: ${{ format('mise-task-{0}', runner.os) }}
+        key: ${{ format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml') }}
 
     - name: Cache nub
       if: contains(inputs.cache-preset, 'nub')
