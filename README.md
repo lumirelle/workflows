@@ -14,10 +14,8 @@ Cache support is powered by [`actions/cache`](https://github.com/actions/cache).
 
 There are some cache presets supported via the `cache-preset` input:
 
-- `mise-deps` — caches [mise deps state](https://mise.jdx.dev/dev-tools/deps.html#freshness-checking) (`~/.local/state/mise/deps`), keyed by OS.
-- `mise-task` — caches mise task artifacts & state (`~/.cache/mise/task-artifacts`, `~/.local/state/mise/task-artifacts`, `~/.local/state/mise/task-sources`), keyed by OS. Requires `cache = { enabled = true }` in your `mise.toml` tasks.
-- `nub` — caches [nub virtual store](https://nubjs.com/docs/install/virtual-store#one-symlink-per-package) (`~/.local/share/nub/store/v1`), keyed by `nub.lock`
-- `hk` — caches [hk cache dir](https://hk.jdx.dev/gen/settings-config.html#cache-dir) (`~/.cache/hk`), keyed by `hk.pkl`
+- `mise-task` — Caches mise task artifacts & state (`~/.cache/mise/task-artifacts`, `~/.local/state/mise/task-artifacts`, `~/.local/state/mise/task-sources`), keyed by OS. Requires `cache = { enabled = true }` in your `mise.toml` tasks.
+- `nub` — Caches [nub virtual store](https://nubjs.com/docs/install/virtual-store#one-symlink-per-package) (`~/.local/share/nub/store/v1`), keyed by `nub.lock`
 
 You can pass a single preset or comma-separated multiple:
 
@@ -40,6 +38,20 @@ For a custom cache, set `cache-path` (and optionally `cache-key` / `cache-restor
     cache-path: ./.cache
     cache-key: 'custom-${{ runner.os }}'
 ```
+
+<details>
+<summary>
+
+##### Deprecated preset
+
+</summary>
+
+- `mise-deps` — Caches [mise deps state](https://mise.jdx.dev/dev-tools/deps.html#freshness-checking) (`~/.local/state/mise/deps`), keyed by OS.
+  - Deps state is strongly correlated with the real dependencies, such as `node_modules` for `npm` backend. Cache dependencies directly is a bad idea: There are many OS & architecture based dependencies cannot be shared, also, the decompressed dependencies may exceed the cache limit.
+- `hk` — Caches [hk cache dir](https://hk.jdx.dev/gen/settings-config.html#cache-dir) (`~/.cache/hk`), keyed by `hk.pkl`
+  - Use `mise-task` cache preset instead.
+
+</details>
 
 ## Workflows
 
