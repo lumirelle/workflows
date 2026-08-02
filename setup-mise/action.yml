@@ -80,37 +80,99 @@ runs:
         experimental: true
         cache: true
 
+    - name: Resolve cache config
+      if: inputs.cache-preset != ''
+      shell: bash
+      env:
+        CACHE_PRESET: ${{ inputs.cache-preset }}
+        CACHE_PRESET_PATH: ${{ inputs.cache-preset-path }}
+        CACHE_PRESET_RESTORE_KEYS: ${{ inputs.cache-preset-restore-keys }}
+      run: |
+        set -euo pipefail
+
+        resolve_json_value() {
+          # $1 = json map, $2 = key
+          # Outputs the value for the key; if array, joins with newline.
+          # Outputs nothing if key is missing.
+          jq -r --arg k "$2" '
+            .[$k] // empty |
+            if type == "array" then join("\n") else . end
+          ' <<< "$1" 2>/dev/null
+        }
+
+        for preset in mise-deps mise-task nub hk; do
+          if [[ "$CACHE_PRESET" != *"$preset"* ]]; then
+            continue
+          fi
+
+          var_suffix="${preset//-/_}"
+
+          # --- Resolve path ---
+          path=""
+          if [[ -n "$CACHE_PRESET_PATH" ]]; then
+            path=$(resolve_json_value "$CACHE_PRESET_PATH" "$preset")
+          fi
+          if [[ -z "$path" ]]; then
+            case "$preset" in
+              mise-deps)
+                path="$HOME/.local/state/mise/deps" ;;
+              mise-task)
+                path="$HOME/.cache/mise/task-artifacts"$'\n'"$HOME/.local/state/mise/task-artifacts"$'\n'"$HOME/.local/state/mise/task-sources" ;;
+              nub)
+                path="$HOME/.local/share/nub/store/v1" ;;
+              hk)
+                path="$HOME/.cache/hk" ;;
+            esac
+          fi
+          {
+            echo "PRESET_PATH_${var_suffix}<<EOF"
+            printf '%s\n' "$path"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+
+          # --- Resolve restore-keys ---
+          rkeys=""
+          if [[ -n "$CACHE_PRESET_RESTORE_KEYS" ]]; then
+            rkeys=$(resolve_json_value "$CACHE_PRESET_RESTORE_KEYS" "$preset")
+          fi
+          {
+            echo "PRESET_RESTORE_KEYS_${var_suffix}<<EOF"
+            printf '%s\n' "$rkeys"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+        done
+
     - name: Cache mise deps (deprecated, remove in next major version)
       if: contains(inputs.cache-preset, 'mise-deps')
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
-        path: ${{ inputs.cache-preset-path != '' && join(fromJSON(inputs.cache-preset-path).mise-deps, '\n') || '~/.local/state/mise/deps' }}
+        path: ${{ env.PRESET_PATH_mise_deps }}
         key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-deps || format('mise-deps-{0}-{1}', runner.os, hashFiles('mise.toml')) }}
-        restore-keys: ${{ inputs.cache-preset-restore-keys != '' && join(fromJSON(inputs.cache-preset-restore-keys).mise-deps, '\n') || '' }}
+        restore-keys: ${{ env.PRESET_RESTORE_KEYS_mise_deps }}
 
     - name: Cache mise task artifacts
       if: contains(inputs.cache-preset, 'mise-task')
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
-        path: ${{ inputs.cache-preset-path != '' && join(fromJSON(inputs.cache-preset-path).mise-task, '\n') || format('{0}\n{1}\n{2}', '~/.cache/mise/task-artifacts', '~/.local/state/mise/task-artifacts', '~/.local/state/mise/task-sources') }}
+        path: ${{ env.PRESET_PATH_mise_task }}
         key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-task || format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml')) }}
-        restore-keys: ${{ inputs.cache-preset-restore-keys != '' && join(fromJSON(inputs.cache-preset-restore-keys).mise-task, '\n') || '' }}
+        restore-keys: ${{ env.PRESET_RESTORE_KEYS_mise_task }}
 
     - name: Cache nub
       if: contains(inputs.cache-preset, 'nub')
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
-        path: ${{ inputs.cache-preset-path != '' && join(fromJSON(inputs.cache-preset-path).nub, '\n') || '~/.local/share/nub/store/v1' }}
+        path: ${{ env.PRESET_PATH_nub }}
         key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).nub || format('nub-{0}-{1}', runner.os, hashFiles('nub.lock')) }}
-        restore-keys: ${{ inputs.cache-preset-restore-keys != '' && join(fromJSON(inputs.cache-preset-restore-keys).nub, '\n') || '' }}
+        restore-keys: ${{ env.PRESET_RESTORE_KEYS_nub }}
 
     - name: Cache hk (deprecated, remove in next major version)
       if: contains(inputs.cache-preset, 'hk')
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
-        path: ${{ inputs.cache-preset-path != '' && join(fromJSON(inputs.cache-preset-path).hk, '\n') || '~/.cache/hk' }}
+        path: ${{ env.PRESET_PATH_hk }}
         key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).hk || format('hk-{0}-{1}', runner.os, hashFiles('hk.pkl')) }}
-        restore-keys: ${{ inputs.cache-preset-restore-keys != '' && join(fromJSON(inputs.cache-preset-restore-keys).hk, '\n') || '' }}
+        restore-keys: ${{ env.PRESET_RESTORE_KEYS_hk }}
 
     - name: Cache (custom)
       if: inputs.cache-path != ''
