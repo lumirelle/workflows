@@ -160,69 +160,41 @@ runs:
           } >> "$GITHUB_ENV"
         done
 
-    - name: Restore mise deps (deprecated, remove in next major version)
+    - name: Cache mise deps (deprecated, remove in next major version)
       if: contains(inputs.cache-preset, 'mise-deps')
-      id: cache-mise-deps
-      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ env.PRESET_PATH_mise_deps }}
         key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-deps || format('mise-deps-{0}-{1}', runner.os, hashFiles('**/mise*.toml')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
         restore-keys: ${{ env.PRESET_RESTORE_KEYS_mise_deps }}
+        save-always: true
 
-    - name: Save mise deps (deprecated, remove in next major version)
-      if: contains(inputs.cache-preset, 'mise-deps') && always()
-      uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-      with:
-        path: ${{ env.PRESET_PATH_mise_deps }}
-        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-deps || format('mise-deps-{0}-{1}', runner.os, hashFiles('**/mise*.toml')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
-
-    - name: Restore mise task artifacts
+    - name: Cache mise task artifacts
       if: contains(inputs.cache-preset, 'mise-task')
-      id: cache-mise-task
-      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ env.PRESET_PATH_mise_task }}
         key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-task || format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
         restore-keys: ${{ env.PRESET_RESTORE_KEYS_mise_task }}
+        save-always: true
 
-    - name: Save mise task artifacts
-      if: contains(inputs.cache-preset, 'mise-task') && always()
-      uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-      with:
-        path: ${{ env.PRESET_PATH_mise_task }}
-        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-task || format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
-
-    - name: Restore nub
+    - name: Cache nub
       if: contains(inputs.cache-preset, 'nub')
-      id: cache-nub
-      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ env.PRESET_PATH_nub }}
         key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).nub || format('nub-{0}-{1}', runner.os, hashFiles('nub.lock')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
         restore-keys: ${{ env.PRESET_RESTORE_KEYS_nub }}
+        save-always: true
 
-    - name: Save nub
-      if: contains(inputs.cache-preset, 'nub') && always()
-      uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-      with:
-        path: ${{ env.PRESET_PATH_nub }}
-        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).nub || format('nub-{0}-{1}', runner.os, hashFiles('nub.lock')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
-
-    - name: Restore hk (deprecated, remove in next major version)
+    - name: Cache hk (deprecated, remove in next major version)
       if: contains(inputs.cache-preset, 'hk')
-      id: cache-hk
-      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ env.PRESET_PATH_hk }}
         key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).hk || format('hk-{0}-{1}', runner.os, hashFiles('hk.pkl')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
         restore-keys: ${{ env.PRESET_RESTORE_KEYS_hk }}
-
-    - name: Save hk (deprecated, remove in next major version)
-      if: contains(inputs.cache-preset, 'hk') && always()
-      uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-      with:
-        path: ${{ env.PRESET_PATH_hk }}
-        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).hk || format('hk-{0}-{1}', runner.os, hashFiles('hk.pkl')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+        save-always: true
 
     - name: Cache (custom)
       if: inputs.cache-path != ''
