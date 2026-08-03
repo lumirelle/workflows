@@ -141,7 +141,7 @@ runs:
         path: ${{ env.PRESET_PATH_mise_deps }}
         key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-deps || format('mise-deps-{0}-{1}', runner.os, hashFiles('**/mise*.toml')) }}-${{ github.job }}
         restore-keys: |
-          ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-deps || format('mise-deps-{0}-{1}', runner.os, hashFiles('**/mise*.toml')) }}-
+          ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-deps || format('mise-deps-{0}-{1}', runner.os, hashFiles('**/mise*.toml')) }}-${{ github.job }}
           ${{ inputs.cache-preset-restore-keys != '' && fromJSON(inputs.cache-preset-restore-keys).mise-deps || '' }}
 
     - name: Cache mise task artifacts
@@ -151,7 +151,7 @@ runs:
         path: ${{ env.PRESET_PATH_mise_task }}
         key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-task || format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml')) }}-${{ github.job }}
         restore-keys: |
-          ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-task || format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml')) }}-
+          ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-task || format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml')) }}-${{ github.job }}
           ${{ inputs.cache-preset-restore-keys != '' && fromJSON(inputs.cache-preset-restore-keys).mise-task || '' }}
 
     - name: Cache nub
@@ -161,7 +161,7 @@ runs:
         path: ${{ env.PRESET_PATH_nub }}
         key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).nub || format('nub-{0}-{1}', runner.os, hashFiles('nub.lock')) }}-${{ github.job }}
         restore-keys: |
-          ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).nub || format('nub-{0}-{1}', runner.os, hashFiles('nub.lock')) }}-
+          ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).nub || format('nub-{0}-{1}', runner.os, hashFiles('nub.lock')) }}-${{ github.job }}
           ${{ inputs.cache-preset-restore-keys != '' && fromJSON(inputs.cache-preset-restore-keys).nub || '' }}
 
     - name: Cache hk (deprecated, remove in next major version)
@@ -171,7 +171,7 @@ runs:
         path: ${{ env.PRESET_PATH_hk }}
         key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).hk || format('hk-{0}-{1}', runner.os, hashFiles('hk.pkl')) }}-${{ github.job }}
         restore-keys: |
-          ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).hk || format('hk-{0}-{1}', runner.os, hashFiles('hk.pkl')) }}-
+          ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).hk || format('hk-{0}-{1}', runner.os, hashFiles('hk.pkl')) }}-${{ github.job }}
           ${{ inputs.cache-preset-restore-keys != '' && fromJSON(inputs.cache-preset-restore-keys).hk || '' }}
 
     - name: Cache (custom)
