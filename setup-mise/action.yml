@@ -147,7 +147,7 @@ runs:
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ env.PRESET_PATH_mise_deps }}
-        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-deps || format('mise-deps-{0}-{1}', runner.os, hashFiles('mise.toml')) }}
+        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-deps || format('mise-deps-{0}-{1}', runner.os, hashFiles('**/mise*.toml')) }}
         restore-keys: ${{ env.PRESET_RESTORE_KEYS_mise_deps }}
 
     - name: Cache mise task artifacts
@@ -155,7 +155,7 @@ runs:
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ env.PRESET_PATH_mise_task }}
-        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-task || format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml')) }}
+        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-task || format('mise-task-{0}-{1}', runner.os, hashFiles('**/mise*.toml')) }}
         restore-keys: ${{ env.PRESET_RESTORE_KEYS_mise_task }}
 
     - name: Cache nub
