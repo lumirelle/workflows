@@ -13,6 +13,36 @@ on:
         type: string
         default: ''
 
+      cache-preset-path:
+        required: false
+        type: string
+        default: ''
+
+      cache-preset-key:
+        required: false
+        type: string
+        default: ''
+
+      cache-preset-restore-keys:
+        required: false
+        type: string
+        default: ''
+
+      cache-path:
+        required: false
+        type: string
+        default: ''
+
+      cache-key:
+        required: false
+        type: string
+        default: ''
+
+      cache-restore-keys:
+        required: false
+        type: string
+        default: ''
+
       fix:
         required: false
         type: string
@@ -33,6 +63,12 @@ jobs:
         uses: lumirelle/workflows/setup-mise@v10
         with:
           cache-preset: ${{ inputs.cache-preset }}
+          cache-preset-path: ${{ inputs.cache-preset-path }}
+          cache-preset-key: ${{ inputs.cache-preset-key }}
+          cache-preset-restore-keys: ${{ inputs.cache-preset-restore-keys }}
+          cache-path: ${{ inputs.cache-path }}
+          cache-key: ${{ inputs.cache-key }}
+          cache-restore-keys: ${{ inputs.cache-restore-keys }}
           debug: ${{ inputs.debug }}
 
       - name: Fix
