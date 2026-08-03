@@ -39,8 +39,9 @@ inputs:
       JSON map to override cache keys per preset.
       Example: '{"mise-task":"mise-task-custom-key","nub":"nub-custom-key"}'.
       Keys must match enabled presets. Omitted keys use defaults.
-      A '-<job>' suffix is appended automatically so concurrent jobs in the same
-      workflow (e.g. check and test) get distinct cache entries.
+      A '-<job>-<run_id>-<run_attempt>' suffix is appended automatically so
+      every run saves a fresh cache entry (actions/cache cannot save on hit).
+      restore-keys fall back to the '<base>-<job>' prefix for the same job.
     default: ''
 
   cache-preset-restore-keys:
@@ -139,7 +140,7 @@ runs:
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ env.PRESET_PATH_mise_deps }}
-        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-deps || format('mise-deps-{0}-{1}', runner.os, hashFiles('**/mise*.toml')) }}-${{ github.job }}
+        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-deps || format('mise-deps-{0}-{1}', runner.os, hashFiles('**/mise*.toml')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
         restore-keys: |
           ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-deps || format('mise-deps-{0}-{1}', runner.os, hashFiles('**/mise*.toml')) }}-${{ github.job }}
           ${{ inputs.cache-preset-restore-keys != '' && fromJSON(inputs.cache-preset-restore-keys).mise-deps || '' }}
@@ -149,7 +150,7 @@ runs:
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ env.PRESET_PATH_mise_task }}
-        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-task || format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml')) }}-${{ github.job }}
+        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-task || format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
         restore-keys: |
           ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-task || format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml')) }}-${{ github.job }}
           ${{ inputs.cache-preset-restore-keys != '' && fromJSON(inputs.cache-preset-restore-keys).mise-task || '' }}
@@ -159,7 +160,7 @@ runs:
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ env.PRESET_PATH_nub }}
-        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).nub || format('nub-{0}-{1}', runner.os, hashFiles('nub.lock')) }}-${{ github.job }}
+        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).nub || format('nub-{0}-{1}', runner.os, hashFiles('nub.lock')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
         restore-keys: |
           ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).nub || format('nub-{0}-{1}', runner.os, hashFiles('nub.lock')) }}-${{ github.job }}
           ${{ inputs.cache-preset-restore-keys != '' && fromJSON(inputs.cache-preset-restore-keys).nub || '' }}
@@ -169,7 +170,7 @@ runs:
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ env.PRESET_PATH_hk }}
-        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).hk || format('hk-{0}-{1}', runner.os, hashFiles('hk.pkl')) }}-${{ github.job }}
+        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).hk || format('hk-{0}-{1}', runner.os, hashFiles('hk.pkl')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
         restore-keys: |
           ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).hk || format('hk-{0}-{1}', runner.os, hashFiles('hk.pkl')) }}-${{ github.job }}
           ${{ inputs.cache-preset-restore-keys != '' && fromJSON(inputs.cache-preset-restore-keys).hk || '' }}
