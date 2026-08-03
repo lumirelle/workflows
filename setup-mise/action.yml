@@ -39,8 +39,8 @@ inputs:
       JSON map to override cache keys per preset.
       Example: '{"mise-task":"mise-task-custom-key","nub":"nub-custom-key"}'.
       Keys must match enabled presets. Omitted keys use defaults.
-      A '-<job>-<run_id>-<run_attempt>' suffix is appended automatically to ensure
-      every run saves a fresh cache entry (restore falls back via restore-keys).
+      A '-<job>' suffix is appended automatically so concurrent jobs in the same
+      workflow (e.g. check and test) get distinct cache entries.
     default: ''
 
   cache-preset-restore-keys:
@@ -48,8 +48,9 @@ inputs:
       JSON map to override restore-keys per preset.
       Values can be a string or an array of strings for multiple keys.
       Example: '{"nub":["nub-Linux-","nub-"]}'.
-      Keys must match enabled presets. Omitted keys default to '<preset>-<runner.os>-'
-      so restore can fall back to the most recent matching cache entry.
+      Keys must match enabled presets. Omitted keys default to the base key
+      prefix (including content hash) so restore falls back to the most recent
+      matching entry from any job.
     default: ''
 
   cache-path:
@@ -89,8 +90,6 @@ runs:
       env:
         CACHE_PRESET: ${{ inputs.cache-preset }}
         CACHE_PRESET_PATH: ${{ inputs.cache-preset-path }}
-        CACHE_PRESET_RESTORE_KEYS: ${{ inputs.cache-preset-restore-keys }}
-        RUNNER_OS: ${{ runner.os }}
       run: |
         set -euo pipefail
 
@@ -133,31 +132,6 @@ runs:
             printf '%s\n' "$path"
             echo "EOF"
           } >> "$GITHUB_ENV"
-
-          # --- Resolve restore-keys ---
-          # Default: prefix of the base key (without hash/job/run dimensions)
-          # so restore can fall back to the most recent matching entry.
-          rkeys=""
-          if [[ -n "$CACHE_PRESET_RESTORE_KEYS" ]]; then
-            rkeys=$(resolve_json_value "$CACHE_PRESET_RESTORE_KEYS" "$preset")
-          fi
-          if [[ -z "$rkeys" ]]; then
-            case "$preset" in
-              mise-deps)
-                rkeys="mise-deps-${RUNNER_OS}-" ;;
-              mise-task)
-                rkeys="mise-task-${RUNNER_OS}-" ;;
-              nub)
-                rkeys="nub-${RUNNER_OS}-" ;;
-              hk)
-                rkeys="hk-${RUNNER_OS}-" ;;
-            esac
-          fi
-          {
-            echo "PRESET_RESTORE_KEYS_${var_suffix}<<EOF"
-            printf '%s\n' "$rkeys"
-            echo "EOF"
-          } >> "$GITHUB_ENV"
         done
 
     - name: Cache mise deps (deprecated, remove in next major version)
@@ -165,36 +139,40 @@ runs:
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ env.PRESET_PATH_mise_deps }}
-        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-deps || format('mise-deps-{0}-{1}', runner.os, hashFiles('**/mise*.toml')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
-        restore-keys: ${{ env.PRESET_RESTORE_KEYS_mise_deps }}
-        save-always: true
+        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-deps || format('mise-deps-{0}-{1}', runner.os, hashFiles('**/mise*.toml')) }}-${{ github.job }}
+        restore-keys: |
+          ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-deps || format('mise-deps-{0}-{1}', runner.os, hashFiles('**/mise*.toml')) }}-
+          ${{ inputs.cache-preset-restore-keys != '' && fromJSON(inputs.cache-preset-restore-keys).mise-deps || '' }}
 
     - name: Cache mise task artifacts
       if: contains(inputs.cache-preset, 'mise-task')
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ env.PRESET_PATH_mise_task }}
-        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-task || format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
-        restore-keys: ${{ env.PRESET_RESTORE_KEYS_mise_task }}
-        save-always: true
+        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-task || format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml')) }}-${{ github.job }}
+        restore-keys: |
+          ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-task || format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml')) }}-
+          ${{ inputs.cache-preset-restore-keys != '' && fromJSON(inputs.cache-preset-restore-keys).mise-task || '' }}
 
     - name: Cache nub
       if: contains(inputs.cache-preset, 'nub')
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ env.PRESET_PATH_nub }}
-        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).nub || format('nub-{0}-{1}', runner.os, hashFiles('nub.lock')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
-        restore-keys: ${{ env.PRESET_RESTORE_KEYS_nub }}
-        save-always: true
+        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).nub || format('nub-{0}-{1}', runner.os, hashFiles('nub.lock')) }}-${{ github.job }}
+        restore-keys: |
+          ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).nub || format('nub-{0}-{1}', runner.os, hashFiles('nub.lock')) }}-
+          ${{ inputs.cache-preset-restore-keys != '' && fromJSON(inputs.cache-preset-restore-keys).nub || '' }}
 
     - name: Cache hk (deprecated, remove in next major version)
       if: contains(inputs.cache-preset, 'hk')
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ env.PRESET_PATH_hk }}
-        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).hk || format('hk-{0}-{1}', runner.os, hashFiles('hk.pkl')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
-        restore-keys: ${{ env.PRESET_RESTORE_KEYS_hk }}
-        save-always: true
+        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).hk || format('hk-{0}-{1}', runner.os, hashFiles('hk.pkl')) }}-${{ github.job }}
+        restore-keys: |
+          ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).hk || format('hk-{0}-{1}', runner.os, hashFiles('hk.pkl')) }}-
+          ${{ inputs.cache-preset-restore-keys != '' && fromJSON(inputs.cache-preset-restore-keys).hk || '' }}
 
     - name: Cache (custom)
       if: inputs.cache-path != ''
