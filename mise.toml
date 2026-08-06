@@ -19,7 +19,7 @@ _.path = ['{{config_root}}/node_modules/.bin']
 
 [task_config.input_groups]
 deps = ["package.json", "nub.lock"]
-hk = ["*.js", "*.mjs", "*.cjs", "*.jsx", "*.ts", "*.mts", "*.cts", "*.tsx", "*.json", "*.jsonc", "*.yaml", "*.yml", "*.toml", "*.md", "*.mdc", "*.mdx", "*.lua", "hk.pkl"]
+check = ["*.js", "*.mjs", "*.cjs", "*.jsx", "*.ts", "*.mts", "*.cts", "*.tsx", "*.json", "*.jsonc", "*.yaml", "*.yml", "*.toml", "*.md", "*.mdc", "*.mdx", "*.lua", "hk.pkl"]
 
 [tasks.build]
 description = 'A mocked build task.'
@@ -37,7 +37,7 @@ arg "[rest]" var=#true help="Additional arguments to pass to the test runner"
 run = '''
 hk check {{ "--staged" if usage.staged else "--all" }} {{ usage.rest | join(sep=' ') if usage.rest else '' }}
 '''
-sources = ["@group:deps", "@group:hk"]
+sources = ["@group:deps", "@group:check"]
 outputs = []
 depends = 'build'
 cache = { enabled = true, command_inputs = ["hk --version"] }
@@ -51,7 +51,7 @@ arg "[rest]" var=#true help="Additional arguments to pass to the test runner"
 run = '''
 hk fix {{ "--staged" if usage.staged else "--all" }} {{ usage.rest | join(sep=' ') if usage.rest else '' }}
 '''
-sources = ["@group:deps", "@group:hk"]
+sources = ["@group:deps", "@group:check"]
 outputs = []
 depends = 'build'
 cache = { enabled = true, command_inputs = ["hk --version"] }
