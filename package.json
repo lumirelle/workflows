@@ -3,23 +3,23 @@
   "type": "module",
   "version": "10.5.9",
   "private": true,
-  "packageManager": "nub@0.6.0",
+  "packageManager": "nub@0.7.5",
   "devEngines": {
     "packageManager": {
       "name": "nub",
-      "version": "^0.6.0",
-      "onFail": "warn"
+      "version": "^0.7.5",
+      "onFail": "ignore"
     }
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^9.2.0",
+    "@antfu/eslint-config": "^9.3.0",
     "@lumirelle/oxlint-config": "^0.13.0",
-    "bumpp": "^12.0.0",
-    "changelogithub": "^14.0.0",
-    "eslint": "^10.8.0",
-    "eslint-plugin-oxlint": "^1.75.0",
-    "oxlint": "^1.75.0",
+    "bumpp": "^12.2.0",
+    "changelogithub": "^15.0.4",
+    "eslint": "^10.8.1",
+    "eslint-plugin-oxlint": "^1.78.0",
+    "oxlint": "^1.78.0",
     "oxlint-tsgolint": "^7.0.2001",
-    "taze": "^19.16.0"
+    "taze": "^20.0.1"
   }
 }
