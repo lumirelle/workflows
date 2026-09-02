@@ -14,12 +14,12 @@
   "devDependencies": {
     "@antfu/eslint-config": "^9.3.0",
     "@lumirelle/oxlint-config": "^0.13.0",
-    "bumpp": "^12.2.0",
-    "changelogithub": "^15.0.4",
-    "eslint": "^10.8.1",
-    "eslint-plugin-oxlint": "^1.78.0",
-    "oxlint": "^1.78.0",
+    "bumpp": "^12.2.2",
+    "changelogithub": "^15.0.5",
+    "eslint": "^10.9.1",
+    "eslint-plugin-oxlint": "^1.80.0",
+    "oxlint": "^1.80.0",
     "oxlint-tsgolint": "^7.0.2001",
-    "taze": "^20.0.1"
+    "taze": "^21.1.0"
   }
 }
