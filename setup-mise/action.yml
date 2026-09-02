@@ -81,6 +81,7 @@ runs:
         MISE_CACHE_DIR: ~/.cache/mise/
       with:
         version: ${{ inputs.mise-version }}
+        minimum_release_age: 7d
         log_level: ${{ inputs.debug == 'true' && 'debug' || 'info' }}
         experimental: true
         cache: true
