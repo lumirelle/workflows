@@ -66,6 +66,10 @@ inputs:
     description: Restore-keys for the custom cache step. Optional.
     default: ''
 
+  github-token:
+    description: GitHub token for API authentication.
+    default: ${{ github.token }}
+
 runs:
   using: composite
   steps:
@@ -85,6 +89,7 @@ runs:
         log_level: ${{ inputs.debug == 'true' && 'debug' || 'info' }}
         experimental: true
         cache: true
+        github_token: ${{ inputs.github-token }}
 
     - name: Resolve cache config
       if: inputs.cache-preset != ''
