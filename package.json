@@ -16,10 +16,10 @@
     "@lumirelle/oxlint-config": "^0.14.0",
     "bumpp": "^12.3.0",
     "changelogithub": "^15.0.5",
-    "eslint": "^10.10.0",
-    "eslint-plugin-oxlint": "^1.82.0",
-    "oxlint": "^1.82.0",
-    "oxlint-tsgolint": "^7.0.2001",
-    "taze": "^21.1.0"
+    "eslint": "^10.12.0",
+    "eslint-plugin-oxlint": "^1.87.0",
+    "oxlint": "^1.87.0",
+    "oxlint-tsgolint": "^7.0.2003",
+    "taze": "^21.3.0"
   }
 }
