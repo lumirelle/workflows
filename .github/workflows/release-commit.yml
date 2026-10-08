@@ -76,7 +76,9 @@ jobs:
           debug: ${{ inputs.debug }}
 
       - name: Build
+        if: ${{ inputs.build != '' }}
         run: ${{ inputs.build }}
 
       - name: Publish
+        if: ${{ inputs.publish != '' }}
         run: ${{ inputs.publish }}

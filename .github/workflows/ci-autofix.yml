@@ -55,6 +55,7 @@ on:
 
 jobs:
   autofix:
+    if: ${{ inputs.fix != '' }}
     runs-on: ${{ inputs.primary-os }}
     permissions:
       contents: read

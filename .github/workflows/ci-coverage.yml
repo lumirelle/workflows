@@ -55,6 +55,7 @@ on:
 
 jobs:
   coverage:
+    if: ${{ inputs.test != '' }}
     runs-on: ${{ inputs.primary-os }}
     permissions:
       id-token: write

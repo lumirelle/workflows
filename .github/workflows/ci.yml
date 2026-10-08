@@ -70,6 +70,7 @@ on:
 
 jobs:
   check:
+    if: ${{ inputs.check != '' }}
     runs-on: ${{ inputs.primary-os }}
     steps:
       - name: Setup mise
@@ -88,6 +89,7 @@ jobs:
         run: ${{ inputs.check }}
 
   test:
+    if: ${{ inputs.test != '' }}
     strategy:
       matrix:
         os: ${{ fromJson(format('[{0}]', inputs.os-matrix)) }}

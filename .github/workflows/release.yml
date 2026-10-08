@@ -92,7 +92,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build
+        if: ${{ inputs.build != '' }}
         run: ${{ inputs.build }}
 
       - name: Publish
+        if: ${{ inputs.publish != '' }}
         run: ${{ inputs.publish }}
