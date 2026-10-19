@@ -1,6 +1,6 @@
 # Workflow
 
-A collection of reusable GitHub Actions workflows. Inspired by [sxzz/workflows](https://github.com/sxzz/workflows).
+A collection of reusable GitHub Actions workflows. Based on Mise. Inspired by [sxzz/workflows](https://github.com/sxzz/workflows).
 
 ## Actions
 
