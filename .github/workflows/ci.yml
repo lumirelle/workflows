@@ -6,10 +6,7 @@ on:
       primary-os:
         required: false
         type: string
-        # `ubuntu-slim` has no swap, so its commit limit is ~50% of RAM (~2.5 GiB).
-        # Oxlint's JS-plugin fixed-size allocator reserves ~6 GiB of address space and
-        # aborts with ENOMEM there, before any linting happens.
-        default: ubuntu-latest
+        default: ubuntu-slim
 
       cache-preset:
         required: false
