@@ -19,7 +19,26 @@ _.path = ['{{config_root}}/node_modules/.bin']
 
 [task_config.input_groups]
 deps = ["package.json", "nub.lock"]
-check = ["*.js", "*.mjs", "*.cjs", "*.jsx", "*.ts", "*.mts", "*.cts", "*.tsx", "*.json", "*.jsonc", "*.yaml", "*.yml", "*.toml", "*.md", "*.mdc", "*.mdx", "*.lua", "hk.pkl"]
+check = [
+  "**/*.js",
+  "**/*.mjs",
+  "**/*.cjs",
+  "**/*.jsx",
+  "**/*.ts",
+  "**/*.mts",
+  "**/*.cts",
+  "**/*.tsx",
+  "**/*.json",
+  "**/*.jsonc",
+  "**/*.yaml",
+  "**/*.yml",
+  "**/*.toml",
+  "**/*.md",
+  "**/*.mdc",
+  "**/*.mdx",
+  "**/*.lua",
+  "hk.pkl",
+]
 
 [tasks.build]
 description = 'A mocked build task.'
