@@ -34,7 +34,7 @@ Each preset runs as an independent cache step with its own key and path.
 For a custom cache, set `cache-path` (and optionally `cache-key` / `cache-restore-keys`). This adds an extra cache step alongside any presets:
 
 ```yaml
-- uses: lumirelle/workflows/setup-mise@v10
+- uses: lumirelle/workflows/setup-mise@v11
   with:
     # nub & mise-task still works
     cache-preset: 'nub,mise-task'
@@ -50,7 +50,7 @@ Every runnable step is optional: pass an empty string for its input to skip it. 
 ```yaml
 jobs:
   ci:
-    uses: lumirelle/workflows/.github/workflows/ci.yml@v10
+    uses: lumirelle/workflows/.github/workflows/ci.yml@v11
     with:
       check: '' # skip `mise run check`
       test: '' # skip `mise run test`
@@ -65,7 +65,7 @@ For example, the CI workflow has two jobs: `check` & `test`. To cache ESLint for
 ```yaml
 jobs:
   ci:
-    uses: lumirelle/workflows/.github/workflows/ci.yml@v10
+    uses: lumirelle/workflows/.github/workflows/ci.yml@v11
     with:
       cache-preset: nub
       check-cache-preset: 'nub,eslint'
