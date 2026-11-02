@@ -75,6 +75,9 @@ jobs:
 - [ci-autofix.yml](./.github/workflows/ci-autofix.yml): A workflow for continuous integration with autofix, runs `mise run fix` by default
 - [ci-coverage.yml](./.github/workflows/ci-coverage.yml): A workflow for continuous integration with code coverage, runs `mise run test --coverage` by default
 
+> [!NOTE]
+> `ci.yml` and `ci-autofix.yml` default `primary-os` to `ubuntu-latest`. `ubuntu-slim` has no swap, so its commit limit is only ~2.5 GiB — too small for Oxlint's JS-plugin fixed-size allocator, which reserves ~6 GiB of address space and aborts before linting starts. Only pass `primary-os: ubuntu-slim` explicitly when your `check`/`fix` task does not load Oxlint JS plugins.
+
 ### Release
 
 - [release.yml](./.github/workflows/release.yml): A workflow for releasing a new version, runs `mise run changelog` && `mise run publish` by default
