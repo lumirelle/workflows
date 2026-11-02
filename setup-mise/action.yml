@@ -101,7 +101,8 @@ runs:
 
         # `contains()` in step conditions is case-insensitive; normalize here so
         # this loop selects exactly the same presets as the steps below.
-        CACHE_PRESET="${CACHE_PRESET,,}"
+        # Avoid `${var,,}`: macOS ships bash 3.2, which lacks it.
+        CACHE_PRESET=$(printf '%s' "$CACHE_PRESET" | tr '[:upper:]' '[:lower:]')
 
         resolve_json_value() {
           # $1 = json map, $2 = key
