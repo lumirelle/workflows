@@ -13,6 +13,18 @@ on:
         type: string
         default: ''
 
+      # Job specific cache preset, will overwrite the default cache-preset.
+      check-cache-preset:
+        required: false
+        type: string
+        default: ''
+
+      # Job specific cache preset, will overwrite the default cache-preset.
+      test-cache-preset:
+        required: false
+        type: string
+        default: ''
+
       cache-preset-path:
         required: false
         type: string
@@ -76,7 +88,7 @@ jobs:
       - name: Setup mise
         uses: lumirelle/workflows/setup-mise@v10
         with:
-          cache-preset: ${{ inputs.cache-preset }}
+          cache-preset: ${{ inputs.check-cache-preset != '' && inputs.check-cache-preset || inputs.cache-preset }}
           cache-preset-path: ${{ inputs.cache-preset-path }}
           cache-preset-key: ${{ inputs.cache-preset-key }}
           cache-preset-restore-keys: ${{ inputs.cache-preset-restore-keys }}
@@ -100,7 +112,7 @@ jobs:
       - name: Setup mise
         uses: lumirelle/workflows/setup-mise@v10
         with:
-          cache-preset: ${{ inputs.cache-preset }}
+          cache-preset: ${{ inputs.test-cache-preset != '' && inputs.test-cache-preset || inputs.cache-preset }}
           cache-preset-path: ${{ inputs.cache-preset-path }}
           cache-preset-key: ${{ inputs.cache-preset-key }}
           cache-preset-restore-keys: ${{ inputs.cache-preset-restore-keys }}

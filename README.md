@@ -15,7 +15,7 @@ Cache support is powered by [`actions/cache`](https://github.com/actions/cache).
 There are some cache presets supported via the `cache-preset` input:
 
 - `nub` — Caches [nub virtual store](https://nubjs.com/docs/install/virtual-store#one-symlink-per-package) (`~/.local/share/nub/store/v1`), keyed by `nub.lock`
-- `eslint` - Caches ESLint cache (default to `.eslintcache`)
+- `eslint` — Caches ESLint's lint cache (`--cache`, default `.eslintcache`), keyed by OS and `nub.lock`. Your lint task must pass `--cache`, and the cache path can be overridden with `--cache-location`.
 - `mise-task` — Caches mise task artifacts & state (`~/.cache/mise/task-artifacts`, `~/.local/state/mise/task-artifacts`, `~/.local/state/mise/task-sources`), keyed by OS. Requires `cache = { enabled = true }` in your `mise.toml` tasks.
 
 You can pass a single preset or comma-separated multiple, and override preset via JSON configurations:
@@ -25,7 +25,7 @@ You can pass a single preset or comma-separated multiple, and override preset vi
   with:
     cache-preset: 'nub,mise-task'
     cache-preset-path: '{"nub":"/custom/nub","mise-task":["/path/a","/path/b"]}'
-    cache-preset-key: '{"nub":["nub-Linux-","nub-"]}'
+    cache-preset-key: '{"nub":"nub-custom-key"}'
     cache-preset-restore-keys: '{"nub":"nub-","mise-task":"mise-task-"}'
 ```
 
@@ -56,14 +56,29 @@ jobs:
       test: '' # skip `mise run test`
 ```
 
+### Job specific cache presets
+
+For the workflow who has more than one jobs inside, there are job specific cache presets.
+
+For example, the CI workflow has two jobs: `check` & `test`. To cache ESLint for the check job only:
+
+```yaml
+jobs:
+  ci:
+    uses: lumirelle/workflows/.github/workflows/ci.yml@v10
+    with:
+      cache-preset: nub
+      check-cache-preset: 'nub,eslint'
+```
+
+> [!Note]
+> For the workflow who has only one job, `cache-preset` is enough.
+
 ### CI
 
 - [ci.yml](./.github/workflows/ci.yml): A workflow for continuous integration, runs `mise run check` & `mise run test` by default
 - [ci-autofix.yml](./.github/workflows/ci-autofix.yml): A workflow for continuous integration with autofix, runs `mise run fix` by default
 - [ci-coverage.yml](./.github/workflows/ci-coverage.yml): A workflow for continuous integration with code coverage, runs `mise run test --coverage` by default
-
-> [!NOTE]
-> `ubuntu-slim` has no swap, so its commit limit is only ~2.5 GiB — too small for Oxlint's JS-plugin fixed-size allocator, which reserves ~6 GiB of address space and aborts before linting starts. If your `check`/`fix` task loads Oxlint JS plugins, pass `primary-os: ubuntu-latest`.
 
 ### Release
 
