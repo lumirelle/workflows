@@ -19,35 +19,9 @@ auto = true
 [env]
 _.path = ['{{config_root}}/node_modules/.bin']
 
-[task_config.input_groups]
-deps = ["package.json", "nub.lock"]
-check = [
-  "**/*.js",
-  "**/*.mjs",
-  "**/*.cjs",
-  "**/*.jsx",
-  "**/*.ts",
-  "**/*.mts",
-  "**/*.cts",
-  "**/*.tsx",
-  "**/*.json",
-  "**/*.jsonc",
-  "**/*.yaml",
-  "**/*.yml",
-  "**/*.toml",
-  "**/*.md",
-  "**/*.mdc",
-  "**/*.mdx",
-  "**/*.lua",
-  "hk.pkl",
-]
-
 [tasks.build]
 description = 'A mocked build task.'
 run = 'echo "Build completed!"'
-sources = ["mise.toml"]
-outputs = []
-cache = { enabled = true }
 
 [tasks.check]
 description = 'Run all checks.'
@@ -58,10 +32,7 @@ arg "[rest]" var=#true help="Additional arguments to pass to the test runner"
 run = '''
 hk check {{ "--staged" if usage.staged else "--all" }} {{ usage.rest | join(sep=' ') if usage.rest else '' }}
 '''
-sources = ["@group:deps", "@group:check"]
-outputs = []
 depends = 'build'
-cache = { enabled = true, command_inputs = ["hk --version"] }
 
 [tasks.fix]
 description = 'Fix all check issues.'
@@ -72,10 +43,7 @@ arg "[rest]" var=#true help="Additional arguments to pass to the test runner"
 run = '''
 hk fix {{ "--staged" if usage.staged else "--all" }} {{ usage.rest | join(sep=' ') if usage.rest else '' }}
 '''
-sources = ["@group:deps", "@group:check"]
-outputs = []
 depends = 'build'
-cache = { enabled = true, command_inputs = ["hk --version"] }
 
 [tasks.test]
 description = 'A mocked test task.'
@@ -83,9 +51,6 @@ run = '''
 node --version
 echo "Tests runs on Node.js!"
 '''
-sources = ["mise.toml"]
-outputs = []
-cache = { enabled = true, command_inputs = ["node --version"] }
 
 [tasks.prerelease]
 description = 'Prepare for release.'
