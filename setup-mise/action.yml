@@ -20,24 +20,23 @@ inputs:
 
   cache-preset:
     description: |-
-      Named cache preset(s) to enable. Comma-separated for multiple (e.g. 'nub', 'hk', 'nub,hk').
+      Named cache preset(s) to enable. Comma-separated for multiple (e.g. 'nub', 'mise-task', 'nub,mise-task').
       Each preset runs as an independent cache step with its own key and path.
-      Available presets: 'mise-task', 'nub'.
-      Deprecated presets: 'mise-deps', 'hk'.
+      Available presets: 'nub', 'mise-task'.
     default: ''
 
   cache-preset-path:
     description: |-
       JSON map to override cache paths per preset.
       Values can be a string or an array of strings for multiple paths.
-      Example: '{"mise-task":["/path/a","/path/b"],"nub":"/custom/nub"}'.
+      Example: '{"nub":"/custom/nub","mise-task":["/path/a","/path/b"]}'.
       Keys must match enabled presets. Omitted keys use defaults.
     default: ''
 
   cache-preset-key:
     description: |-
       JSON map to override cache keys per preset.
-      Example: '{"mise-task":"mise-task-custom-key","nub":"nub-custom-key"}'.
+      Example: '{"nub":"nub-custom-key","mise-task":"mise-task-custom-key"}'.
       Keys must match enabled presets. Omitted keys use defaults.
       A '-<job>-<run_id>-<run_attempt>' suffix is appended automatically so
       every run saves a fresh cache entry (actions/cache cannot save on hit).
@@ -110,7 +109,7 @@ runs:
           ' <<< "$1" 2>/dev/null
         }
 
-        for preset in mise-deps mise-task nub hk; do
+        for preset in nub mise-task; do
           if [[ "$CACHE_PRESET" != *"$preset"* ]]; then
             continue
           fi
@@ -124,14 +123,10 @@ runs:
           fi
           if [[ -z "$path" ]]; then
             case "$preset" in
-              mise-deps)
-                path="$HOME/.local/state/mise/deps" ;;
               mise-task)
                 path="$HOME/.cache/mise/task-artifacts"$'\n'"$HOME/.local/state/mise/task-artifacts"$'\n'"$HOME/.local/state/mise/task-sources" ;;
               nub)
                 path="$HOME/.local/share/nub/store/v1" ;;
-              hk)
-                path="$HOME/.cache/hk" ;;
             esac
           fi
           {
@@ -140,26 +135,6 @@ runs:
             echo "EOF"
           } >> "$GITHUB_ENV"
         done
-
-    - name: Cache mise deps (deprecated, remove in next major version)
-      if: contains(inputs.cache-preset, 'mise-deps')
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-      with:
-        path: ${{ env.PRESET_PATH_mise_deps }}
-        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-deps || format('mise-deps-{0}-{1}', runner.os, hashFiles('**/mise*.toml')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
-        restore-keys: |
-          ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-deps || format('mise-deps-{0}-{1}', runner.os, hashFiles('**/mise*.toml')) }}-${{ github.job }}
-          ${{ inputs.cache-preset-restore-keys != '' && fromJSON(inputs.cache-preset-restore-keys).mise-deps || '' }}
-
-    - name: Cache mise task artifacts
-      if: contains(inputs.cache-preset, 'mise-task')
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-      with:
-        path: ${{ env.PRESET_PATH_mise_task }}
-        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-task || format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
-        restore-keys: |
-          ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-task || format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml')) }}-${{ github.job }}
-          ${{ inputs.cache-preset-restore-keys != '' && fromJSON(inputs.cache-preset-restore-keys).mise-task || '' }}
 
     - name: Cache nub
       if: contains(inputs.cache-preset, 'nub')
@@ -171,15 +146,15 @@ runs:
           ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).nub || format('nub-{0}-{1}', runner.os, hashFiles('nub.lock')) }}-${{ github.job }}
           ${{ inputs.cache-preset-restore-keys != '' && fromJSON(inputs.cache-preset-restore-keys).nub || '' }}
 
-    - name: Cache hk (deprecated, remove in next major version)
-      if: contains(inputs.cache-preset, 'hk')
+    - name: Cache mise task artifacts
+      if: contains(inputs.cache-preset, 'mise-task')
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
-        path: ${{ env.PRESET_PATH_hk }}
-        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).hk || format('hk-{0}-{1}', runner.os, hashFiles('hk.pkl')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+        path: ${{ env.PRESET_PATH_mise_task }}
+        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-task || format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
         restore-keys: |
-          ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).hk || format('hk-{0}-{1}', runner.os, hashFiles('hk.pkl')) }}-${{ github.job }}
-          ${{ inputs.cache-preset-restore-keys != '' && fromJSON(inputs.cache-preset-restore-keys).hk || '' }}
+          ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-task || format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml')) }}-${{ github.job }}
+          ${{ inputs.cache-preset-restore-keys != '' && fromJSON(inputs.cache-preset-restore-keys).mise-task || '' }}
 
     - name: Cache (custom)
       if: inputs.cache-path != ''
