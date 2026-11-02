@@ -15,6 +15,7 @@ Cache support is powered by [`actions/cache`](https://github.com/actions/cache).
 There are some cache presets supported via the `cache-preset` input:
 
 - `nub` — Caches [nub virtual store](https://nubjs.com/docs/install/virtual-store#one-symlink-per-package) (`~/.local/share/nub/store/v1`), keyed by `nub.lock`
+- `eslint` - Caches ESLint cache (default to `.eslintcache`)
 - `mise-task` — Caches mise task artifacts & state (`~/.cache/mise/task-artifacts`, `~/.local/state/mise/task-artifacts`, `~/.local/state/mise/task-sources`), keyed by OS. Requires `cache = { enabled = true }` in your `mise.toml` tasks.
 
 You can pass a single preset or comma-separated multiple, and override preset via JSON configurations:
