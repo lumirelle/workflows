@@ -72,7 +72,7 @@ jobs:
     steps:
       - name: Setup mise
         id: setup-mise
-        uses: lumirelle/workflows/setup-mise@v10
+        uses: lumirelle/workflows/setup-mise@v11
         with:
           fetch-all: true
           cache-preset: ${{ inputs.cache-preset }}

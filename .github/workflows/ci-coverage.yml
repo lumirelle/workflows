@@ -61,7 +61,7 @@ jobs:
       id-token: write
     steps:
       - name: Setup mise
-        uses: lumirelle/workflows/setup-mise@v10
+        uses: lumirelle/workflows/setup-mise@v11
         with:
           cache-preset: ${{ inputs.cache-preset }}
           cache-preset-path: ${{ inputs.cache-preset-path }}

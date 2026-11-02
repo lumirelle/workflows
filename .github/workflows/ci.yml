@@ -86,7 +86,7 @@ jobs:
     runs-on: ${{ inputs.primary-os }}
     steps:
       - name: Setup mise
-        uses: lumirelle/workflows/setup-mise@v10
+        uses: lumirelle/workflows/setup-mise@v11
         with:
           cache-preset: ${{ inputs.check-cache-preset != '' && inputs.check-cache-preset || inputs.cache-preset }}
           cache-preset-path: ${{ inputs.cache-preset-path }}
@@ -110,7 +110,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Setup mise
-        uses: lumirelle/workflows/setup-mise@v10
+        uses: lumirelle/workflows/setup-mise@v11
         with:
           cache-preset: ${{ inputs.test-cache-preset != '' && inputs.test-cache-preset || inputs.cache-preset }}
           cache-preset-path: ${{ inputs.cache-preset-path }}
