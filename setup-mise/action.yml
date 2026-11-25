@@ -25,40 +25,12 @@ inputs:
       Available presets: 'nub', 'mise-task', 'eslint'.
     default: ''
 
-  cache-preset-path:
-    description: |-
-      JSON map to override cache paths per preset.
-      Values can be a string or an array of strings for multiple paths.
-      Example: '{"nub":"/custom/nub","mise-task":["/path/a","/path/b"]}'.
-      Keys must match enabled presets. Omitted keys use defaults.
-    default: ''
-
-  cache-preset-key:
-    description: |-
-      JSON map to override cache keys per preset.
-      Example: '{"nub":"nub-custom-key","mise-task":"mise-task-custom-key"}'.
-      Keys must match enabled presets. Omitted keys use defaults.
-      A '-<job>-<run_id>-<run_attempt>' suffix is appended automatically so
-      every run saves a fresh cache entry (actions/cache cannot save on hit).
-      restore-keys fall back to the '<base>-<job>' prefix for the same job.
-    default: ''
-
-  cache-preset-restore-keys:
-    description: |-
-      JSON map to override restore-keys per preset.
-      Values can be a string or an array of strings for multiple keys.
-      Example: '{"nub":["nub-Linux-","nub-"]}'.
-      Keys must match enabled presets. Omitted keys default to the base key
-      prefix (including content hash) so restore falls back to the most recent
-      matching entry from any job.
-    default: ''
-
   cache-path:
     description: Path to cache via actions/cache. Enables a custom cache step alongside any preset.
     default: ''
 
   cache-key:
-    description: Cache key for the custom cache step. Defaults to runner.os.
+    description: Cache key for the custom cache step. Defaults to 'custom-<runner.os>'.
     default: ''
 
   cache-restore-keys:
@@ -90,95 +62,39 @@ runs:
         cache: true
         github_token: ${{ inputs.github-token }}
 
-    - name: Resolve cache config
-      if: inputs.cache-preset != ''
-      shell: bash
-      env:
-        CACHE_PRESET: ${{ inputs.cache-preset }}
-        CACHE_PRESET_PATH: ${{ inputs.cache-preset-path }}
-      run: |
-        set -euo pipefail
-
-        # `contains()` in step conditions is case-insensitive; normalize here so
-        # this loop selects exactly the same presets as the steps below.
-        # Avoid `${var,,}`: macOS ships bash 3.2, which lacks it.
-        CACHE_PRESET=$(printf '%s' "$CACHE_PRESET" | tr '[:upper:]' '[:lower:]')
-
-        resolve_json_value() {
-          # $1 = json map, $2 = key
-          # Outputs the value for the key; if array, joins with newline.
-          # Outputs nothing if key is missing.
-          jq -r --arg k "$2" '
-            .[$k] // empty |
-            if type == "array" then join("\n") else . end
-          ' <<< "$1" 2>/dev/null
-        }
-
-        for preset in nub eslint mise-task; do
-          if [[ "$CACHE_PRESET" != *"$preset"* ]]; then
-            continue
-          fi
-
-          var_suffix="${preset//-/_}"
-
-          # --- Resolve path ---
-          path=""
-          if [[ -n "$CACHE_PRESET_PATH" ]]; then
-            path=$(resolve_json_value "$CACHE_PRESET_PATH" "$preset")
-          fi
-          if [[ -z "$path" ]]; then
-            case "$preset" in
-              nub)
-                path="$HOME/.local/share/nub/store/v1" ;;
-              eslint)
-                path=".eslintcache" ;;
-              mise-task)
-                path="$HOME/.cache/mise/task-artifacts"$'\n'"$HOME/.local/state/mise/task-artifacts"$'\n'"$HOME/.local/state/mise/task-sources" ;;
-            esac
-          fi
-          {
-            echo "PRESET_PATH_${var_suffix}<<EOF"
-            printf '%s\n' "$path"
-            echo "EOF"
-          } >> "$GITHUB_ENV"
-        done
-
     - name: Cache Nub
       if: contains(inputs.cache-preset, 'nub')
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
-        path: ${{ env.PRESET_PATH_nub }}
-        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).nub || format('nub-{0}-{1}', runner.os, hashFiles('nub.lock')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
-        restore-keys: |
-          ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).nub || format('nub-{0}-{1}', runner.os, hashFiles('nub.lock')) }}-${{ github.job }}
-          ${{ inputs.cache-preset-restore-keys != '' && fromJSON(inputs.cache-preset-restore-keys).nub || '' }}
+        path: ~/.local/share/nub/store/v1
+        key: ${{ format('nub-{0}-{1}', runner.os, hashFiles('nub.lock')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+        restore-keys: ${{ format('nub-{0}-{1}', runner.os, hashFiles('nub.lock')) }}-${{ github.job }}
 
     - name: Cache ESLint
       if: contains(inputs.cache-preset, 'eslint')
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
-        path: ${{ env.PRESET_PATH_eslint }}
-        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).eslint || format('eslint-{0}-{1}', runner.os, hashFiles('nub.lock')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
-        restore-keys: |
-          ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).eslint || format('eslint-{0}-{1}', runner.os, hashFiles('nub.lock')) }}-${{ github.job }}
-          ${{ inputs.cache-preset-restore-keys != '' && fromJSON(inputs.cache-preset-restore-keys).eslint || '' }}
+        path: .eslintcache
+        key: ${{ format('eslint-{0}-{1}', runner.os, hashFiles('nub.lock')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+        restore-keys: ${{ format('eslint-{0}-{1}', runner.os, hashFiles('nub.lock')) }}-${{ github.job }}
 
     - name: Cache Mise task artifacts
       if: contains(inputs.cache-preset, 'mise-task')
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
-        path: ${{ env.PRESET_PATH_mise_task }}
-        key: ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-task || format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
-        restore-keys: |
-          ${{ inputs.cache-preset-key != '' && fromJSON(inputs.cache-preset-key).mise-task || format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml')) }}-${{ github.job }}
-          ${{ inputs.cache-preset-restore-keys != '' && fromJSON(inputs.cache-preset-restore-keys).mise-task || '' }}
+        path: |
+          ~/.cache/mise/task-artifacts
+          ~/.local/state/mise/task-artifacts
+          ~/.local/state/mise/task-sources
+        key: ${{ format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml')) }}-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+        restore-keys: ${{ format('mise-task-{0}-{1}', runner.os, hashFiles('mise.toml')) }}-${{ github.job }}
 
     - name: Cache (custom)
       if: inputs.cache-path != ''
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ inputs.cache-path }}
-        key: custom-${{ inputs.cache-key != '' && inputs.cache-key || runner.os }}
+        key: ${{ inputs.cache-key != '' && inputs.cache-key || format('custom-{0}', runner.os) }}
         restore-keys: ${{ inputs.cache-restore-keys }}
 
     - name: Mise doctor

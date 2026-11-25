@@ -15,21 +15,18 @@ Cache support is powered by [`actions/cache`](https://github.com/actions/cache).
 There are some cache presets supported via the `cache-preset` input:
 
 - `nub` — Caches [nub virtual store](https://nubjs.com/docs/install/virtual-store#one-symlink-per-package) (`~/.local/share/nub/store/v1`), keyed by `nub.lock`
-- `eslint` — Caches ESLint's lint cache (`--cache`, default `.eslintcache`), keyed by OS and `nub.lock`. Your lint task must pass `--cache`, and the cache path can be overridden with `--cache-location`.
+- `eslint` — Caches ESLint's lint cache (`--cache`, default `.eslintcache`), keyed by OS and `nub.lock`. Your lint task must pass `--cache` and use the default cache location.
 - `mise-task` — Caches mise task artifacts & state (`~/.cache/mise/task-artifacts`, `~/.local/state/mise/task-artifacts`, `~/.local/state/mise/task-sources`), keyed by OS. Requires `cache = { enabled = true }` in your `mise.toml` tasks.
 
-You can pass a single preset or comma-separated multiple, and override preset via JSON configurations:
+You can pass a single preset or comma-separated multiple:
 
 ```yaml
 - uses: lumirelle/workflows/setup-mise@main
   with:
     cache-preset: 'nub,mise-task'
-    cache-preset-path: '{"nub":"/custom/nub","mise-task":["/path/a","/path/b"]}'
-    cache-preset-key: '{"nub":"nub-custom-key"}'
-    cache-preset-restore-keys: '{"nub":"nub-","mise-task":"mise-task-"}'
 ```
 
-Each preset runs as an independent cache step with its own key and path.
+Each preset runs as an independent cache step with its own key and path. If a preset's default path or key does not fit your setup, disable that preset and define the cache with the custom options below.
 
 For a custom cache, set `cache-path` (and optionally `cache-key` / `cache-restore-keys`). This adds an extra cache step alongside any presets:
 
@@ -40,7 +37,7 @@ For a custom cache, set `cache-path` (and optionally `cache-key` / `cache-restor
     cache-preset: 'nub,mise-task'
     # Your custom cache rules
     cache-path: ./.cache
-    cache-key: 'custom-${{ runner.os }}'
+    cache-key: 'my-cache-${{ runner.os }}'
 ```
 
 ## Workflows

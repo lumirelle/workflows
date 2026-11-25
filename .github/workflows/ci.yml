@@ -6,7 +6,7 @@ on:
       primary-os:
         required: false
         type: string
-        default: ubuntu-slim
+        default: ubuntu-latest
 
       cache-preset:
         required: false
@@ -21,21 +21,6 @@ on:
 
       # Job specific cache preset, will overwrite the default cache-preset.
       test-cache-preset:
-        required: false
-        type: string
-        default: ''
-
-      cache-preset-path:
-        required: false
-        type: string
-        default: ''
-
-      cache-preset-key:
-        required: false
-        type: string
-        default: ''
-
-      cache-preset-restore-keys:
         required: false
         type: string
         default: ''
@@ -58,7 +43,7 @@ on:
       os-matrix:
         required: false
         type: string
-        default: '"ubuntu-slim", "macos-latest", "windows-latest"'
+        default: '"ubuntu-latest", "macos-latest", "windows-latest"'
 
       runtime-versions:
         required: false
@@ -89,9 +74,6 @@ jobs:
         uses: lumirelle/workflows/setup-mise@v11
         with:
           cache-preset: ${{ inputs.check-cache-preset != '' && inputs.check-cache-preset || inputs.cache-preset }}
-          cache-preset-path: ${{ inputs.cache-preset-path }}
-          cache-preset-key: ${{ inputs.cache-preset-key }}
-          cache-preset-restore-keys: ${{ inputs.cache-preset-restore-keys }}
           cache-path: ${{ inputs.cache-path }}
           cache-key: ${{ inputs.cache-key }}
           cache-restore-keys: ${{ inputs.cache-restore-keys }}
@@ -113,9 +95,6 @@ jobs:
         uses: lumirelle/workflows/setup-mise@v11
         with:
           cache-preset: ${{ inputs.test-cache-preset != '' && inputs.test-cache-preset || inputs.cache-preset }}
-          cache-preset-path: ${{ inputs.cache-preset-path }}
-          cache-preset-key: ${{ inputs.cache-preset-key }}
-          cache-preset-restore-keys: ${{ inputs.cache-preset-restore-keys }}
           cache-path: ${{ inputs.cache-path }}
           cache-key: ${{ inputs.cache-key }}
           cache-restore-keys: ${{ inputs.cache-restore-keys }}
