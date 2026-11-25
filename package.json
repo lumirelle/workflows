@@ -1,7 +1,7 @@
 {
   "name": "workflows",
   "type": "module",
-  "version": "11.0.2",
+  "version": "12.0.0",
   "private": true,
   "packageManager": "nub@0.11.2",
   "devEngines": {
